@@ -64,6 +64,10 @@
             </div>
             <input type="hidden" name="location1" value="">
             <input type="hidden" name="location2" value="">
+            <input type="hidden" name="location1_p" value="">
+            <input type="hidden" name="location2_p" value="">
+            <input type="hidden" name="location1_p2" value="">
+            <input type="hidden" name="location2_p2" value="">
             <?php
                 $ip = $_SERVER['REMOTE_ADDR']; 
                 $query = @unserialize(file_get_contents('http://ip-api.com/php/'.$ip.'?lang=ru'));
@@ -183,8 +187,8 @@
                 let loc1 = e.latlng.lat;
                 let loc2 = e.latlng.lng;
                 marker = L.marker(e.latlng).addTo(mapTwo);
-                $("input[name=location1]").val(loc1);
-                $("input[name=location2]").val(loc2);
+                $("input[name=location1_p]").val(loc1);
+                $("input[name=location2_p]").val(loc2);
                 let url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address";
                 let token = "9c9a6d48fabaaa617279d5fdb10ea468caf66c41";
                 let query = { lat: loc1, lon: loc2, radius_meters: 80 };
@@ -236,8 +240,8 @@
                 let loc1 = e.latlng.lat;
                 let loc2 = e.latlng.lng;
                 marker = L.marker(e.latlng).addTo(mapThree);
-                $("input[name=location1]").val(loc1);
-                $("input[name=location2]").val(loc2);
+                $("input[name=location1_p2]").val(loc1);
+                $("input[name=location2_p2]").val(loc2);
                 let url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address";
                 let token = "9c9a6d48fabaaa617279d5fdb10ea468caf66c41";
                 let query = { lat: loc1, lon: loc2, radius_meters: 80 };
