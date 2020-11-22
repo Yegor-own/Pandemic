@@ -4,28 +4,285 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регистрация</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
 </head>
 <body>
-<div class="container reg border-secondary"><br><br>
-    <form action="divarication.php" method="post">
-        <div class="title">
-            <h1>Зарегестрироваться</h1>
-        </div>
-        <div class="form-group">
-            <label for="login">Ваш Логин</label>
-            <input name="reg-login" type="text" value="" class="form-control" id="login" placeholder="Введите Login">
-        </div>
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input name="reg-password" type="password" value="" class="form-control" id="password" placeholder="Введите пароль">
-        </div>
-        <button type="submit" class="btn btn-success">Подтвердить</button>
-    </form>
-</div>
+    <div class="container reg border-secondary"><br><br>
+        <form action="divarication.php" method="post">
+            <div class="title">
+                <h1>Зарегестрироваться</h1>
+            </div>
+            <div class="form-group">
+                <label for="login">Ваш Логин</label>
+                <input name="reg-login" type="text" value="" class="form-control" id="login" placeholder="Введите Login">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input name="reg-password" type="password" value="" class="form-control" id="password" placeholder="Введите пароль">
+            </div>
+            <div id="mapOne" style="height: 400px; cursor: pointer;"></div><br>
+            <input type="text" name="adres" class="form-control" value="" placeholder="Автозаполнение"><br>
+            <div id="mapTwo" style="height: 400px; cursor: pointer;"></div><br>
+            <input type="text" name="adres2" class="form-control" value="" placeholder="Автозаполнение"><br>
+            <div id="mapThree" style="height: 400px; cursor: pointer;"></div><br>
+            <input type="text" name="adres3" class="form-control" value="" placeholder="Автозаполнение"><br>
+            <div class="form-group">
+                <p class="title">Ваше состояние</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="quantity" id="Radios1" value="1" checked>
+                    <label class="form-check-label" for="Radios1">
+                        Ожидание результатов тестирования
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="quantity" id="Radios2" value="2" checked>
+                    <label class="form-check-label" for="Radios2">
+                        Ожидание результатов тестирования
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="quantity" id="Radios3" value="3" checked>
+                    <label class="form-check-label" for="Radios3">
+                        Ожидание результатов тестирования
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="quantity" id="Radios4" value="4">
+                    <label class="form-check-label" for="Radios4">
+                        Был в контакте с подтвержденным случаем
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="quantity" id="Radios5" value="5">
+                    <label class="form-check-label" for="Radios5">
+                        Был в контакте с потенциальным носителем вируса
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" name="location1" value="">
+            <input type="hidden" name="location2" value="">
+            <?php
+                $ip = $_SERVER['REMOTE_ADDR']; 
+                $query = @unserialize(file_get_contents('http://ip-api.com/php/'.$ip.'?lang=ru'));
+                if($query && $query['status'] == 'success') {
+                    $lat = $query['lat'];
+                    $lng = $query['lon'];
+                    echo '<script>';
+                    echo 'let lat = ' . $lat . ';';
+                    echo 'let lng = ' . $lng . ';';
+                    echo 'const mapOne = L.map(\'mapOne\', {}).setView([lat, lng], 13);';
+                    echo 'const mapTwo = L.map(\'mapTwo\', {}).setView([lat, lng], 13);';
+                    echo 'const mapThree = L.map(\'mapThree\', {}).setView([lat, lng], 13);';
+                    echo '</script>';
+                } else {
+                    echo '<script>';
+                    echo 'const mapOne = L.map(\'mapOne\', {}).setView([55.753960, 37.620393], 13);';
+                    echo 'const mapTwo = L.map(\'mapTwo\', {}).setView([55.753960, 37.620393], 13);';
+                    echo 'const mapThree = L.map(\'mapThree\', {}).setView([55.753960, 37.620393], 13);';
+                    echo '</script>';
+                }
+            ?>
+            <script type="text/javascript">
+            // Add a tile layer to the map (Mapbox Streets tile layer)
+            const mapboxToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+            const mapboxUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+            const mapboxAttribution = [
+                'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,',
+                '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>,',
+                'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            ].join(" ");
+            
+            const mapbox = (map) => {
+                return L.tileLayer(mapboxUrl, {
+                    id: 'mapbox.streets',
+                    token: mapboxToken,
+                    attribution: mapboxAttribution,
+                }).addTo(map)
+            };
+
+            [mapOne, mapTwo, mapThree].forEach(mapInstance => mapbox(mapInstance));
+
+            // Add a zoom control to the map
+            const zoomControl = new L.Control.Zoom({
+                position: 'topleft'
+            });
+            zoomControl.addTo(mapOne);
+            zoomControl.addTo(mapTwo);
+            zoomControl.addTo(mapThree);
+
+            const scaleControl = L.control.scale({
+                maxWidth: 200,
+                metric: true,
+                imperial: false,
+                position: 'bottomright'
+            });
+            scaleControl.addTo(mapOne);
+            scaleControl.addTo(mapTwo);
+            scaleControl.addTo(mapThree);
+            let marker;
+            mapOne.on('click', function(e) {
+                console.clear();
+                if(marker) mapOne.removeLayer(marker);
+                position = e.latlng;
+                let loc1 = e.latlng.lat;
+                let loc2 = e.latlng.lng;
+                marker = L.marker(e.latlng).addTo(mapOne);
+                $("input[name=location1]").val(loc1);
+                $("input[name=location2]").val(loc2);
+                let url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address";
+                let token = "9c9a6d48fabaaa617279d5fdb10ea468caf66c41";
+                let query = { lat: loc1, lon: loc2, radius_meters: 80 };
+                let options = {
+                    method: "POST",
+                    mode: "cors",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Authorization": "Token " + token
+                    },
+                    body: JSON.stringify(query)
+                }
+                let adr;
+                let ad = '';
+                function adres (address) {
+                    adr = address;
+                    console.log(typeof adr);
+                    let length = adr.length;
+                    console.log(length);
+                    let i = 0;
+                    let write;
+                    while (i != length) {
+                        i++;
+                        if (adr[i] == 'г') {
+                            write = true;
+                        }
+                        if (write) {
+                            if (adr[i] != '"') {
+                                ad += adr[i];
+                            }
+                            else {break;}
+                        }
+                    }
+                    $("input[name=adres]").val(ad);
+                }
+                fetch(url, options)
+                .then(response => response.text())
+                .then(result => adres(result))
+                .catch(error => console.log("error", error));
+            });
+            // =============================================================
+            // =============================================================
+            // =============================================================
+            mapTwo.on('click', function(e) {
+                console.clear();
+                if(marker) mapTwo.removeLayer(marker);
+                position = e.latlng;
+                let loc1 = e.latlng.lat;
+                let loc2 = e.latlng.lng;
+                marker = L.marker(e.latlng).addTo(mapTwo);
+                $("input[name=location1]").val(loc1);
+                $("input[name=location2]").val(loc2);
+                let url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address";
+                let token = "9c9a6d48fabaaa617279d5fdb10ea468caf66c41";
+                let query = { lat: loc1, lon: loc2, radius_meters: 80 };
+                let options = {
+                    method: "POST",
+                    mode: "cors",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Authorization": "Token " + token
+                    },
+                    body: JSON.stringify(query)
+                }
+                let adr;
+                let ad = '';
+                function adres (address) {
+                    adr = address;
+                    console.log(typeof adr);
+                    let length = adr.length;
+                    console.log(length);
+                    let i = 0;
+                    let write;
+                    while (i != length) {
+                        i++;
+                        if (adr[i] == 'г') {
+                            write = true;
+                        }
+                        if (write) {
+                            if (adr[i] != '"') {
+                                ad += adr[i];
+                            }
+                            else {break;}
+                        }
+                    }
+                    $("input[name=adres2]").val(ad);
+                }
+                fetch(url, options)
+                .then(response => response.text())
+                .then(result => adres(result))
+                .catch(error => console.log("error", error));
+            });
+            // =============================================================
+            // =============================================================
+            // =============================================================
+            mapThree.on('click', function(e) {
+                console.clear();
+                if(marker) mapThree.removeLayer(marker);
+                position = e.latlng;
+                let loc1 = e.latlng.lat;
+                let loc2 = e.latlng.lng;
+                marker = L.marker(e.latlng).addTo(mapThree);
+                $("input[name=location1]").val(loc1);
+                $("input[name=location2]").val(loc2);
+                let url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address";
+                let token = "9c9a6d48fabaaa617279d5fdb10ea468caf66c41";
+                let query = { lat: loc1, lon: loc2, radius_meters: 80 };
+                let options = {
+                    method: "POST",
+                    mode: "cors",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Authorization": "Token " + token
+                    },
+                    body: JSON.stringify(query)
+                }
+                let adr;
+                let ad = '';
+                function adres (address) {
+                    adr = address;
+                    console.log(typeof adr);
+                    let length = adr.length;
+                    console.log(length);
+                    let i = 0;
+                    let write;
+                    while (i != length) {
+                        i++;
+                        if (adr[i] == 'г') {
+                            write = true;
+                        }
+                        if (write) {
+                            if (adr[i] != '"') {
+                                ad += adr[i];
+                            }
+                            else {break;}
+                        }
+                    }
+                    $("input[name=adres3]").val(ad);
+                }
+                fetch(url, options)
+                .then(response => response.text())
+                .then(result => adres(result))
+                .catch(error => console.log("error", error));
+            });
+            </script>
+            <button type="submit" class="btn btn-success">Подтвердить</button>
+        </form>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
