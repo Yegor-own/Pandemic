@@ -6,6 +6,7 @@ $auth = mysqli_fetch_assoc($users);
 $errors = false;
 $page_auth = true;
 $user = false;
+$success = false;
 
 if (isset($_POST['reg_login']) and
     isset($_POST['reg_password']) and
@@ -19,6 +20,18 @@ if (isset($_POST['reg_login']) and
     isset($_POST['adres3']) and
     isset($_POST['location1_p2']) and
     isset($_POST['location2_p2'])) {
+    if (!empty($_POST['reg_login']) and
+        !empty($_POST['reg_password']) and
+        !empty($_POST['adres']) and
+        !empty($_POST['adres2']) and
+        !empty($_POST['quantity']) and
+        !empty($_POST['location1']) and
+        !empty($_POST['location2']) and
+        !empty($_POST['location1_p']) and
+        !empty($_POST['location2_p']) and
+        !empty($_POST['adres3']) and
+        !empty($_POST['location1_p2']) and
+        !empty($_POST['location2_p2'])) {
         $sign =  "INSERT INTO `users` (`login`, `password`, `status`, `home`, `loc`, `loc2`, `place`, `loc_p`, `loc2_p`, `place2`, `loc_p2`, `loc2_p2`) VALUES ('".$_POST['reg_login']."',
                                                                                                                                         '".$_POST['reg_password']."',
                                                                                                                                         '".$_POST['quantity']."',
@@ -31,23 +44,22 @@ if (isset($_POST['reg_login']) and
                                                                                                                                         '".$_POST['adres3']."',
                                                                                                                                         '".$_POST['location1_p2']."',
                                                                                                                                         '".$_POST['location2_p2']."')";
-        echo $sign;
         if ($_POST['reg_login'] != $auth['login']) {
             //mysqli_query($connection, "INSERT INTO `cameras` (`addres`, `location`, `location2`, `descr`, `owner`) VALUES ('".$_POST['adres']."','".$_POST['location1']."', '".$_POST['location2']."', '".$_POST['quantity']."', '".$_POST['ownr']."')") 
                 if(mysqli_query($connection, $sign)) {
                     $success = true;
                     $user = true;
-                    header("Location: " . $_SERVER['REQUEST_URI']);
-                    exit();
                 } else {
                     $errors = true;
                 }
             }
+        }
     }
 
 if (isset($_GET['auth-login']) and isset($_GET['auth-password'])) {
     if ($_GET['auth-login'] != $auth['login'] or $_GET['auth-password'] != $auth['password']) $errors = true;
 }
+echo $success . $errors . $user;
 ?>
 
 <!DOCTYPE html>
