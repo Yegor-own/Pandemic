@@ -17,11 +17,11 @@
             </div>
             <div class="form-group">
                 <label for="login">Ваш Логин</label>
-                <input name="reg-login" type="text" value="" class="form-control" id="login" placeholder="Введите Login">
+                <input name="reg_login" type="text" value="" class="form-control" id="login" placeholder="Введите Login">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input name="reg-password" type="password" value="" class="form-control" id="password" placeholder="Введите пароль">
+                <input name="reg_password" type="password" value="" class="form-control" id="password" placeholder="Введите пароль">
             </div>
             <div id="mapOne" style="height: 400px; cursor: pointer;"></div><br>
             <input type="text" name="adres" class="form-control" value="" placeholder="Автозаполнение"><br>

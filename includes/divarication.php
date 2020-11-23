@@ -1,14 +1,14 @@
 <?php 
-require_once ("db.php");
+require_once ("../db.php");
 
-// $users = mysqli_query($connection, "SELECT * FROM `users`");
-// $auth = mysqli_fetch_assoc($users);
+$users = mysqli_query($connection, "SELECT * FROM `users`");
+$auth = mysqli_fetch_assoc($users);
 $errors = false;
 $page_auth = true;
 $user = false;
 
-if (isset($_POST['reg-login']) and
-    isset($_POST['reg-password']) and
+if (isset($_POST['reg_login']) and
+    isset($_POST['reg_password']) and
     isset($_POST['adres']) and
     isset($_POST['adres2']) and
     isset($_POST['quantity']) and
@@ -19,35 +19,30 @@ if (isset($_POST['reg-login']) and
     isset($_POST['adres3']) and
     isset($_POST['location1_p2']) and
     isset($_POST['location2_p2'])) {
-
-        // if ($_POST['reg-login'] != $auth['login'] and
-        //     $_POST['reg-password'] != $auth['password	'] and
-        //     $_POST['adres'] != $auth['home'] and
-        //     $_POST['adres2'] != $auth['place'] and
-        //     $_POST['quantity'] != $auth['status'] and
-        //     $_POST['location1'] != $auth['loc'] and
-        //     $_POST['location2'] != $auth['loc2'] and
-        //     $_POST['location1_p'] != $auth['loc_p'] and
-        //     $_POST['location2_p'] != $auth['loc2_p']) {
-                if(mysqli_query($connection, 
-                "INSERT INTO `users` (`login`, `password`, `status`, `home`, `loc`, `loc2`, `place`, `loc_p`, `loc2_p`, `place2`, `loc_p2`, `loc2_p2`)
-                VALUES ('".$_POST['reg-login']."',
-                        '".$_POST['reg-password']."',
-                        '".$_POST['quantity']."',
-                        '".$_POST['adres']."',
-                        '".$_POST['location1']."',
-                        '".$_POST['location2']."',
-                        '".$_POST['adres2']."',
-                        '".$_POST['location1_p']."',
-                        '".$_POST['location2_p']."'
-                        '".$_POST['adres3']."',
-                        '".$_POST['location1_p2']."',
-                        '".$_POST['location2_p2']."')")) {
+        $sign =  "INSERT INTO `users` (`login`, `password`, `status`, `home`, `loc`, `loc2`, `place`, `loc_p`, `loc2_p`, `place2`, `loc_p2`, `loc2_p2`) VALUES ('".$_POST['reg_login']."',
+                                                                                                                                        '".$_POST['reg_password']."',
+                                                                                                                                        '".$_POST['quantity']."',
+                                                                                                                                        '".$_POST['adres']."',
+                                                                                                                                        '".$_POST['location1']."',
+                                                                                                                                        '".$_POST['location2']."',
+                                                                                                                                        '".$_POST['adres2']."',
+                                                                                                                                        '".$_POST['location1_p']."',
+                                                                                                                                        '".$_POST['location2_p']."',
+                                                                                                                                        '".$_POST['adres3']."',
+                                                                                                                                        '".$_POST['location1_p2']."',
+                                                                                                                                        '".$_POST['location2_p2']."')";
+        echo $sign;
+        if ($_POST['reg_login'] != $auth['login']) {
+            //mysqli_query($connection, "INSERT INTO `cameras` (`addres`, `location`, `location2`, `descr`, `owner`) VALUES ('".$_POST['adres']."','".$_POST['location1']."', '".$_POST['location2']."', '".$_POST['quantity']."', '".$_POST['ownr']."')") 
+                if(mysqli_query($connection, $sign)) {
                     $success = true;
+                    $user = true;
                     header("Location: " . $_SERVER['REQUEST_URI']);
                     exit();
+                } else {
+                    $errors = true;
                 }
-            //}
+            }
     }
 
 if (isset($_GET['auth-login']) and isset($_GET['auth-password'])) {
