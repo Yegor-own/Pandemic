@@ -10,12 +10,12 @@
 // }
 
 $servername = "localhost";
-$username = "id15471223_root";
-$password = "eR((X?lY%98|xGBv";
-$database = "id15471223_helth";
+$username = "id15492860_admin";
+$password = "m==?w{TsNl3Z{YO6";
+$database = "id15492860_helth";
 
 $connection = mysqli_connect($servername, $username, $password, $database);
-
+$users = mysqli_query($connection, "SELECT * FROM `users`");
 // Check connection
 if (!$connection) {
     die("Connection failed: " . mysqli_connect_error());

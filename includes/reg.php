@@ -1,3 +1,63 @@
+<?php
+
+require_once "../db.php";
+
+session_start();
+$auth = mysqli_fetch_assoc($users);
+// это проверка регистрации
+if (isset($_POST['reg_login']) and
+    isset($_POST['reg_password']) and
+    isset($_POST['adres']) and
+    isset($_POST['adres2']) and
+    isset($_POST['quantity']) and
+    isset($_POST['location1']) and
+    isset($_POST['location2']) and
+    isset($_POST['location1_p']) and
+    isset($_POST['location2_p']) and
+    isset($_POST['adres3']) and
+    isset($_POST['location1_p2']) and
+    isset($_POST['location2_p2'])) {
+    if (!empty($_POST['reg_login']) and
+        !empty($_POST['reg_password']) and
+        !empty($_POST['adres']) and
+        !empty($_POST['adres2']) and
+        !empty($_POST['quantity']) and
+        !empty($_POST['location1']) and
+        !empty($_POST['location2']) and
+        !empty($_POST['location1_p']) and
+        !empty($_POST['location2_p']) and
+        !empty($_POST['adres3']) and
+        !empty($_POST['location1_p2']) and
+        !empty($_POST['location2_p2'])) {
+        $sign =  "INSERT INTO `users` (`login`, `password`, `status`, `home`, `loc`, `loc2`, `place`, `loc_p`, `loc2_p`, `place2`, `loc_p2`, `loc2_p2`) VALUES ('".$_POST['reg_login']."',
+                                                                                                                                        '".$_POST['reg_password']."',
+                                                                                                                                        '".$_POST['quantity']."',
+                                                                                                                                        '".$_POST['adres']."',
+                                                                                                                                        '".$_POST['location1']."',
+                                                                                                                                        '".$_POST['location2']."',
+                                                                                                                                        '".$_POST['adres2']."',
+                                                                                                                                        '".$_POST['location1_p']."',
+                                                                                                                                        '".$_POST['location2_p']."',
+                                                                                                                                        '".$_POST['adres3']."',
+                                                                                                                                        '".$_POST['location1_p2']."',
+                                                                                                                                        '".$_POST['location2_p2']."')";
+        if ($_POST['reg_login'] != $auth['login']) {
+            //mysqli_query($connection, "INSERT INTO `cameras` (`addres`, `location`, `location2`, `descr`, `owner`) VALUES ('".$_POST['adres']."','".$_POST['location1']."', '".$_POST['location2']."', '".$_POST['quantity']."', '".$_POST['ownr']."')") 
+            if(mysqli_query($connection, $sign)) {
+                $_SESSION['login'] = $_POST['reg_login'];
+                $_SESSION['pass'] = $_POST['reg_password'];
+                $_SESSION['user'] = true;
+                $user = $_SESSION['user'];
+            } else {
+                $errors = true;
+            }
+        }
+    } else {
+        header("Location: " . $_SERVER['REQUEST_URI']);
+        exit();
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +71,10 @@
 </head>
 <body>
     <div class="container reg border-secondary"><br><br>
-        <form action="divarication.php" method="post">
+    <?php
+    if (!isset($user)) {
+    ?>
+        <form action="reg.php" method="post">
             <div class="title">
                 <h1>Зарегестрироваться</h1>
             </div>
@@ -23,10 +86,13 @@
                 <label for="password">Password</label>
                 <input name="reg_password" type="password" value="" class="form-control" id="password" placeholder="Введите пароль">
             </div>
+            <p>Выберите место жительства</p>
             <div id="mapOne" style="height: 400px; cursor: pointer;"></div><br>
             <input type="text" name="adres" class="form-control" value="" placeholder="Автозаполнение"><br>
+            <p>Выберите часто посещаемое место №1</p>
             <div id="mapTwo" style="height: 400px; cursor: pointer;"></div><br>
             <input type="text" name="adres2" class="form-control" value="" placeholder="Автозаполнение"><br>
+            <p>Выберите часто посещаемое место №2</p>
             <div id="mapThree" style="height: 400px; cursor: pointer;"></div><br>
             <input type="text" name="adres3" class="form-control" value="" placeholder="Автозаполнение"><br>
             <div class="form-group">
@@ -34,13 +100,13 @@
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="quantity" id="Radios1" value="1" checked>
                     <label class="form-check-label" for="Radios1">
-                        Ожидание результатов тестирования
+                        Положительный результат тестирования
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="quantity" id="Radios2" value="2" checked>
                     <label class="form-check-label" for="Radios2">
-                        Ожидание результатов тестирования
+                    Отрицательный результат тестирования
                     </label>
                 </div>
                 <div class="form-check">
@@ -286,6 +352,11 @@
             </script>
             <button type="submit" class="btn btn-success">Подтвердить</button>
         </form>
+        <?php
+        } else {
+            require_once "request.php";
+        }
+        ?>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

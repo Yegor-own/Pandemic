@@ -1,65 +1,28 @@
 <?php 
 require_once ("../db.php");
 
-$users = mysqli_query($connection, "SELECT * FROM `users`");
 $auth = mysqli_fetch_assoc($users);
-$errors = false;
 $page_auth = true;
-$user = false;
-$success = false;
-
-if (isset($_POST['reg_login']) and
-    isset($_POST['reg_password']) and
-    isset($_POST['adres']) and
-    isset($_POST['adres2']) and
-    isset($_POST['quantity']) and
-    isset($_POST['location1']) and
-    isset($_POST['location2']) and
-    isset($_POST['location1_p']) and
-    isset($_POST['location2_p']) and
-    isset($_POST['adres3']) and
-    isset($_POST['location1_p2']) and
-    isset($_POST['location2_p2'])) {
-    if (!empty($_POST['reg_login']) and
-        !empty($_POST['reg_password']) and
-        !empty($_POST['adres']) and
-        !empty($_POST['adres2']) and
-        !empty($_POST['quantity']) and
-        !empty($_POST['location1']) and
-        !empty($_POST['location2']) and
-        !empty($_POST['location1_p']) and
-        !empty($_POST['location2_p']) and
-        !empty($_POST['adres3']) and
-        !empty($_POST['location1_p2']) and
-        !empty($_POST['location2_p2'])) {
-        $sign =  "INSERT INTO `users` (`login`, `password`, `status`, `home`, `loc`, `loc2`, `place`, `loc_p`, `loc2_p`, `place2`, `loc_p2`, `loc2_p2`) VALUES ('".$_POST['reg_login']."',
-                                                                                                                                        '".$_POST['reg_password']."',
-                                                                                                                                        '".$_POST['quantity']."',
-                                                                                                                                        '".$_POST['adres']."',
-                                                                                                                                        '".$_POST['location1']."',
-                                                                                                                                        '".$_POST['location2']."',
-                                                                                                                                        '".$_POST['adres2']."',
-                                                                                                                                        '".$_POST['location1_p']."',
-                                                                                                                                        '".$_POST['location2_p']."',
-                                                                                                                                        '".$_POST['adres3']."',
-                                                                                                                                        '".$_POST['location1_p2']."',
-                                                                                                                                        '".$_POST['location2_p2']."')";
-        if ($_POST['reg_login'] != $auth['login']) {
-            //mysqli_query($connection, "INSERT INTO `cameras` (`addres`, `location`, `location2`, `descr`, `owner`) VALUES ('".$_POST['adres']."','".$_POST['location1']."', '".$_POST['location2']."', '".$_POST['quantity']."', '".$_POST['ownr']."')") 
-                if(mysqli_query($connection, $sign)) {
-                    $success = true;
-                    $user = true;
-                } else {
-                    $errors = true;
-                }
-            }
-        }
+session_start();
+// это проверка обновления состояния
+$user = $_SESSION['user'];
+$login = $_SESSION['login'];
+$passwd = $_SESSION['pass'];
+if (isset($_POST['reset'])) {
+    if ($_POST['reset']) $_SESSION['user'] = false;
+}
+if (isset($_POST['quantity_update'])) {
+    if (!empty($_POST['quantity_update'])) {
+        $update = "UPDATE `users` SET `status`='".$_POST['quantity_update']."' WHERE `login` = '".$login."'";
+        mysqli_query($connection, $update);
     }
-
+}
 if (isset($_GET['auth-login']) and isset($_GET['auth-password'])) {
     if ($_GET['auth-login'] != $auth['login'] or $_GET['auth-password'] != $auth['password']) $errors = true;
+    else {
+        $user = true;
+    }
 }
-echo $success . $errors . $user;
 ?>
 
 <!DOCTYPE html>
@@ -84,173 +47,53 @@ if (    (isset($_GET['auth-login']) and
     ) {
 ?>
     <div class="container"><br><br>
-        <form action="#" method="post">
+        <form action="divarication.php" method="post">
+            <input name="reset" type="submit" value="Выйти">
+        </form>
+        <form action="divarication.php" method="post">
             <div class="title">
                 <h1>Ваша учетная запись</h1>
                 <h5>Изменить состояние</h5>
             </div><br>
-            <div class="row">
-                <div class="col col-4" id="map" style="cursor: pointer;"></div>
-                <input type="text" name="adres" class="form-control" value="" placeholder="Автозаполнение">
-                <div class="col col-4" id="map2" style="cursor: pointer;"></div>
-                <input type="text" name="adres2" class="form-control" value="" placeholder="Автозаполнение">
-            </div>
             <div class="form-group">
-                
                 <p class="title">Ваше состояние</p>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="quantity" id="Radios1" value="1" checked>
+                    <input class="form-check-input" type="radio" name="quantity_update" id="Radios1" value="1" checked>
                     <label class="form-check-label" for="Radios1">
-                        Ожидание результатов тестирования
+                        Положительный результат тестирования
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="quantity" id="Radios2" value="2" checked>
+                    <input class="form-check-input" type="radio" name="quantity_update" id="Radios2" value="2" checked>
                     <label class="form-check-label" for="Radios2">
-                        Ожидание результатов тестирования
+                        Отрицательный результат тестирования
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="quantity" id="Radios3" value="3" checked>
+                    <input class="form-check-input" type="radio" name="quantity_update" id="Radios3" value="3" checked>
                     <label class="form-check-label" for="Radios3">
                         Ожидание результатов тестирования
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="quantity" id="Radios4" value="4">
+                    <input class="form-check-input" type="radio" name="quantity_update" id="Radios4" value="4">
                     <label class="form-check-label" for="Radios4">
                         Был в контакте с подтвержденным случаем
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="quantity" id="Radios5" value="5">
+                    <input class="form-check-input" type="radio" name="quantity_update" id="Radios5" value="5">
                     <label class="form-check-label" for="Radios5">
                         Был в контакте с потенциальным носителем вируса
                     </label>
                 </div>
             </div>
-            <input type="hidden" name="location1" value="">
-            <input type="hidden" name="location2" value="">
-            <input type="hidden" name="location1_p" value="">
-            <input type="hidden" name="location2_p" value="">
-            <script type="text/javascript">
-            let map = L.map('map').setView([56.8519000, 60.6122000], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(map);
-            let marker;
-            map.on('click', function(e) {
-                console.clear();
-                if(marker) map.removeLayer(marker);
-                position = e.latlng;
-                let loc1 = e.latlng.lat;
-                let loc2 = e.latlng.lng;
-                marker = L.marker(e.latlng).addTo(map);
-                $("input[name=location1]").val(loc1);
-                $("input[name=location2]").val(loc2);
-                let url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address";
-                let token = "9c9a6d48fabaaa617279d5fdb10ea468caf66c41";
-                let query = { lat: loc1, lon: loc2, radius_meters: 80 };
-
-                let options = {
-                    method: "POST",
-                    mode: "cors",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json",
-                        "Authorization": "Token " + token
-                    },
-                    body: JSON.stringify(query)
-                }
-                let adr;
-                let ad = '';
-                function adres (address) {
-                    adr = address;
-                    console.log(typeof adr);
-                    let length = adr.length;
-                    console.log(length);
-                    let i = 0;
-                    let write;
-                    while (i != length) {
-                        i++;
-                        if (adr[i] == 'г') {
-                            write = true;
-                        }
-                        if (write) {
-                            if (adr[i] != '"') {
-                                ad += adr[i];
-                            }
-                            else {break;}
-                        }
-                    }
-                    $("input[name=adres]").val(ad);
-                }
-                fetch(url, options)
-                .then(response => response.text())
-                .then(result => adres(result))
-                .catch(error => console.log("error", error));
-            });
-            //-----------------------------------------------------------------------------
-            let map2 = L.map2('map2').setView([56.8519000, 60.6122000], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(map2);
-            let marker;
-            map2.on('click', function(e) {
-                console.clear();
-                if(marker) map2.removeLayer(marker);
-                position = e.latlng;
-                let loc1_p = e.latlng.lat;
-                let loc2_p = e.latlng.lng;
-                marker = L.marker(e.latlng).addTo(map2);
-                $("input[name=location1_p]").val(loc1_p);
-                $("input[name=location2_p]").val(loc2_p);
-                let url = "https://suggestions.dadata.ru/suggestions/api/4_1/rs/geolocate/address";
-                let token = "9c9a6d48fabaaa617279d5fdb10ea468caf66c41";
-                let query = { lat: loc1_p, lon: loc2_p, radius_meters: 80 };
-
-                let options = {
-                    method: "POST",
-                    mode: "cors",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Accept": "application/json",
-                        "Authorization": "Token " + token
-                    },
-                    body: JSON.stringify(query)
-                }
-                let adr;
-                let ad = '';
-                function adres (address) {
-                    adr = address;
-                    console.log(typeof adr);
-                    let length = adr.length;
-                    console.log(length);
-                    let i = 0;
-                    let write;
-                    while (i != length) {
-                        i++;
-                        if (adr[i] == 'г') {
-                            write = true;
-                        }
-                        if (write) {
-                            if (adr[i] != '"') {
-                                ad += adr[i];
-                            }
-                            else {break;}
-                        }
-                    }
-                    $("input[name=adres2]").val(ad);
-                }
-                fetch(url, options)
-                .then(response => response.text())
-                .then(result => adres(result))
-                .catch(error => console.log("error", error));
-            });
-            </script>
             <button type="submit" class="btn btn-success">Подтвердить</button>
         </form><br><br>
     </div>
     <?php
     }
     else {
-        if ($errors) echo '<div class="alert alert-danger" role="alert"> Логин или пароль неверен!!! </div>';
         require_once('auth.php');
     }
     ?>
