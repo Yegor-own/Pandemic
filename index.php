@@ -1,3 +1,7 @@
+<?php
+session_start();
+if (isset($_SESSION['user'])) $user = $_SESSION['user'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,11 +28,47 @@
         <div class="row">
             <div class="map col-9" id="map"></div>
             <div class="sidebar col-3">
+            <?php
+            if (!$user) {
+                ?>
                 <div class="sign jusyfy-content-center">
                     <div class="title"><h3>В зоне риска?</h3></div>
                     <a href="/includes/reg.php" class="btn btn-primary">Зарегистрироватся</a><br><br>
                     <a href="/includes/divarication.php" class="btn btn-success">Войти</a>
                 </div>
+                <?php
+                } else { ?>
+                <style>
+                    .description {
+                        list-style: none;
+                        margin: 0;
+                    }
+                    .home, .il, .risk {
+                        height: 15px;
+                        width: 15px;
+                        border-radius: 50%;
+                    }
+                    .home {
+                        background-color: blue;
+                    }
+                    .il {
+                        background-color: red;
+                    }
+                    .risk {
+                        background-color: orangered;
+                    }
+                    span{
+                        color: black;
+                    }
+                </style>
+                <div class="description">
+                    <p><img src="blue.png" height="15px" alt=""> - Место жительства</p>
+                    <p><img src="red.png" height="15px" alt=""> - Положительный результат тестирования</p>
+                    <p><img src="orange.png" height="15px" alt=""> - Отрицательный результат тестирования, <br>Ожидание результатов тестирования, <br>Был в контакте с подтвержденным случаем</p>
+                </div>
+                <?php
+                }
+                ?>
             </div>
         </div>
     </div>

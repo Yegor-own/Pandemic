@@ -21,6 +21,7 @@ if (isset($_GET['auth-login']) and isset($_GET['auth-password'])) {
     if ($_GET['auth-login'] != $auth['login'] or $_GET['auth-password'] != $auth['password']) $errors = true;
     else {
         $user = true;
+        $_SESSION['user'] = $user;
     }
 }
 ?>
