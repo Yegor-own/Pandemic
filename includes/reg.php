@@ -72,7 +72,7 @@ if (isset($_POST['reg_login']) and
 <body>
     <div class="container reg border-secondary"><br><br>
     <?php
-    if (!isset($user)) {
+    if (!$_SESSION['user']) {
     ?>
         <form action="reg.php" method="post">
             <div class="title">

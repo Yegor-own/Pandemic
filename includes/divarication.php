@@ -9,7 +9,10 @@ $user = $_SESSION['user'];
 $login = $_SESSION['login'];
 $passwd = $_SESSION['pass'];
 if (isset($_POST['reset'])) {
-    if ($_POST['reset']) $_SESSION['user'] = false;
+    if ($_POST['reset']) {
+        $_SESSION['user'] = false;
+        header("Location: " . $_SERVER['REQUEST_URI']);
+    }
 }
 if (isset($_POST['quantity_update'])) {
     if (!empty($_POST['quantity_update'])) {

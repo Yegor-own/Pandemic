@@ -1,6 +1,9 @@
 <?php
 session_start();
-if (isset($_SESSION['user'])) $user = $_SESSION['user'];
+$_SESSION['user'] = false;
+$user = $_SESSION['user'];
+require_once "db.php";
+$num_rows = mysqli_num_rows($users);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,9 +38,9 @@ if (isset($_SESSION['user'])) $user = $_SESSION['user'];
                     <div class="title"><h3>В зоне риска?</h3></div>
                     <a href="/includes/reg.php" class="btn btn-primary">Зарегистрироватся</a><br><br>
                     <a href="/includes/divarication.php" class="btn btn-success">Войти</a>
-                </div>
+                </div> <br><br>
                 <?php
-                } else { ?>
+                }?>
                 <style>
                     .description {
                         list-style: none;
@@ -66,9 +69,6 @@ if (isset($_SESSION['user'])) $user = $_SESSION['user'];
                     <p><img src="red.png" height="15px" alt=""> - Положительный результат тестирования</p>
                     <p><img src="orange.png" height="15px" alt=""> - Отрицательный результат тестирования, <br>Ожидание результатов тестирования, <br>Был в контакте с подтвержденным случаем</p>
                 </div>
-                <?php
-                }
-                ?>
             </div>
         </div>
     </div>
@@ -81,6 +81,52 @@ if (isset($_SESSION['user'])) $user = $_SESSION['user'];
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+        let counter = '<?php echo $num_rows; ?>';
+        let i = 0;
+        let home = L.icon({
+            iconUrl: 'blue.png',
+            iconSize: [10, 10],
+        });
+        let ile = L.icon({
+            iconUrl: 'red.png',
+            iconSize: [10, 10],
+        });
+        let risk = L.icon({
+            iconUrl: 'orange.png',
+            iconSize: [10, 10],
+        });
     </script>
+    <?php
+        $home;
+        while ($home = mysqli_fetch_assoc($users)) {
+            ?>
+            <script>
+            if (i != counter){
+                i++;
+                let status = '<?php echo $home['status']; ?>';
+                let loc = '<?php echo $home['loc']; ?>';
+                let loc2 = '<?php echo $home['loc2']; ?>';
+                L.marker([loc, loc2], {icon: home}).addTo(map)
+                if (status == '1') {
+                    let loc_p = '<?php echo $home['loc_p']; ?>';
+                    let loc2_p = '<?php echo $home['loc2_p']; ?>';
+                    L.marker([loc_p, loc2_p], {icon: ile}).addTo(map)
+                    let loc_p2 = '<?php echo $home['loc_p2']; ?>';
+                    let loc2_p2 = '<?php echo $home['loc2_p2']; ?>';
+                    L.marker([loc_p2, loc2_p2], {icon: ile}).addTo(map)
+                } else {
+                    let loc_p = '<?php echo $home['loc_p']; ?>';
+                    let loc2_p = '<?php echo $home['loc2_p']; ?>';
+                    L.marker([loc_p, loc2_p], {icon: risk}).addTo(map)
+                    let loc_p2 = '<?php echo $home['loc_p2']; ?>';
+                    let loc2_p2 = '<?php echo $home['loc2_p2']; ?>';
+                    L.marker([loc_p2, loc2_p2], {icon: risk}).addTo(map)
+                }
+                
+            }
+            </script>
+        <?php
+        }
+    ?>
 </body>
 </html>
