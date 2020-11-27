@@ -9,7 +9,7 @@
                 <a class="nav-link" href="/">Главная страница <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item <?php if($page_auth) echo 'active'; $page_auth = false; ?>">
-                <a class="nav-link" href="../includes/divarication.php" tabindex="-1" aria-disabled="true">Ваша страница</a>
+                <a class="nav-link" href="/includes/auth.php" tabindex="-1" aria-disabled="true">Ваша страница</a>
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0" action="../index.php" method="get">

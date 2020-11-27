@@ -1,110 +1,129 @@
 <?php 
 require_once ("../db.php");
-
-$auth = mysqli_fetch_assoc($users);
-$page_auth = true;
 session_start();
-// это проверка обновления состояния
-$user = $_SESSION['user'];
-$login = $_SESSION['login'];
-$passwd = $_SESSION['pass'];
+
+if ($_SESSION['user']) {
+    $_SESSION['request'] = '/includes/user.php';
+} else {
+    $_SESSION['request'] = '/includes/auth.php';
+}
+
+//==================================================================================================
+
+// Проверка регистрации (reg.php)
+if (isset($_POST['reg_login']) and
+    isset($_POST['reg_password']) and
+    isset($_POST['adres']) and
+    isset($_POST['adres2']) and
+    isset($_POST['quantity']) and
+    isset($_POST['location1']) and
+    isset($_POST['location2']) and
+    isset($_POST['location1_p']) and
+    isset($_POST['location2_p']) and
+    isset($_POST['adres3']) and
+    isset($_POST['location1_p2']) and
+    isset($_POST['location2_p2'])) {
+    if (!empty($_POST['reg_login']) and
+        !empty($_POST['reg_password']) and
+        !empty($_POST['adres']) and
+        !empty($_POST['adres2']) and
+        !empty($_POST['quantity']) and
+        !empty($_POST['location1']) and
+        !empty($_POST['location2']) and
+        !empty($_POST['location1_p']) and
+        !empty($_POST['location2_p']) and
+        !empty($_POST['adres3']) and
+        !empty($_POST['location1_p2']) and
+        !empty($_POST['location2_p2'])) {
+        $_POST['reg_password'] = md5($_POST['reg_password']);
+        $sign =  "INSERT INTO `users` (`login`, `password`, `status`, `home`, `loc`, `loc2`, `place`, `loc_p`, `loc2_p`, `place2`, `loc_p2`, `loc2_p2`) VALUES (
+                                                                                                                                        '".$_POST['reg_login']."',
+                                                                                                                                        '".$_POST['reg_password']."',
+                                                                                                                                        '".$_POST['quantity']."',
+                                                                                                                                        '".$_POST['adres']."',
+                                                                                                                                        '".$_POST['location1']."',
+                                                                                                                                        '".$_POST['location2']."',
+                                                                                                                                        '".$_POST['adres2']."',
+                                                                                                                                        '".$_POST['location1_p']."',
+                                                                                                                                        '".$_POST['location2_p']."',
+                                                                                                                                        '".$_POST['adres3']."',
+                                                                                                                                        '".$_POST['location1_p2']."',
+                                                                                                                                        '".$_POST['location2_p2']."')";
+        $user = mysqli_query($connection, "SELECT * FROM `users` WHERE `login`='". $_POST['reg_login'] ."'");
+        $num_rows = mysqli_num_rows($user);
+        if (!$num_rows) {
+            //mysqli_query($connection, "INSERT INTO `cameras` (`addres`, `location`, `location2`, `descr`, `owner`) VALUES ('".$_POST['adres']."','".$_POST['location1']."', '".$_POST['location2']."', '".$_POST['quantity']."', '".$_POST['ownr']."')") 
+            $add_user = mysqli_query($connection, $sign);
+            if($add_user) {
+                $_SESSION['user'] = true;
+                $_SESSION['login'] = $_POST['reg_login'];
+                $login = $_SESSION['login'];
+                $location_user = mysqli_query($connection, "SELECT * FROM `users` WHERE `login`='$login'");
+                $_SESSION['user-info'] = mysqli_fetch_assoc($location_user);
+                header('Location: /includes/user.php');
+                exit();
+            } else {
+                $_SESSION['errors'] = 'Что-то пошло не так';
+                header("Location: reg.php");
+                exit();
+            }
+        } else {
+            $_SESSION['errors'] = 'Пользователь с таким логином уже существует';
+            header("Location: reg.php");
+            exit();
+        }
+    } else {
+        $_SESSION['errors'] = 'Не все формы заполнены';
+        header("Location: reg.php");
+        exit();
+    }
+}
+
+//=======================================================================================================================================================
+
+// Проверка входа (auth.php)
+// $users = mysqli_query($connection, "SELECT * FROM `users`");
+if (isset($_POST['auth-login']) and isset($_POST['auth-password'])) {
+    $login = $_POST['auth-login'];
+    $password = md5($_POST['auth-password']);
+    $check_user = mysqli_query($connection, "SELECT * FROM `users` WHERE `login`='$login' AND `password`='$password'");
+    $num_rows = mysqli_num_rows($check_user);
+    if ($num_rows == 1) {
+        $_SESSION['user-info'] = mysqli_fetch_assoc($check_user);
+        $_SESSION['login'] = $_POST['auth-login'];
+        $_SESSION['user'] = true;
+        header("Location: /includes/user.php");
+        exit();
+    }
+}
+
+//==================================================================================================================
+
+//Проверка выхода из аккаунта
 if (isset($_POST['reset'])) {
     if ($_POST['reset']) {
-        $_SESSION['user'] = false;
-        header("Location: " . $_SERVER['REQUEST_URI']);
+        unset($_SESSION['login']);
+        unset( $_SESSION['user-info']);
+        unset($_SESSION['user']);
+        header("Location: ../index.php");
     }
 }
+
+//=====================================================================================================================
+
+//Проверка обновления статуса
 if (isset($_POST['quantity_update'])) {
-    if (!empty($_POST['quantity_update'])) {
-        $update = "UPDATE `users` SET `status`='".$_POST['quantity_update']."' WHERE `login` = '".$login."'";
-        mysqli_query($connection, $update);
+    $login = $_SESSION['login'];
+    $_SESSION['status-update'] = $_POST['quantity_update'];
+    $update = "UPDATE `users` SET `status`='".$_POST['quantity_update']."' WHERE `login` = '".$login."'";
+    if (mysqli_query($connection, $update)) {
+        $login = $_SESSION['login'];
+        $user_info = mysqli_query($connection, "SELECT * FROM `users` WHERE `login`='$login'");
+        $_SESSION['user-info'] = mysqli_fetch_assoc($user_info);
+        $_SESSION['success-update'] = true;
+        header("Location: user.php");
+        exit();
     }
 }
-if (isset($_GET['auth-login']) and isset($_GET['auth-password'])) {
-    if ($_GET['auth-login'] != $auth['login'] or $_GET['auth-password'] != $auth['password']) $errors = true;
-    else {
-        $user = true;
-        $_SESSION['user'] = $user;
-    }
-}
-?>
 
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-</head>
-
-<body>
-<?php require ('navbar.php'); ?><br>
-<?php
-if (    (isset($_GET['auth-login']) and 
-        isset($_GET['auth-password']) and 
-        $_GET['auth-login'] == $auth['login'] and 
-        $_GET['auth-password'] == $auth['password']) or $user
-    ) {
-?>
-    <div class="container"><br><br>
-        <form action="divarication.php" method="post">
-            <input name="reset" type="submit" value="Выйти">
-        </form>
-        <form action="divarication.php" method="post">
-            <div class="title">
-                <h1>Ваша учетная запись</h1>
-                <h5>Изменить состояние</h5>
-            </div><br>
-            <div class="form-group">
-                <p class="title">Ваше состояние</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="quantity_update" id="Radios1" value="1" checked>
-                    <label class="form-check-label" for="Radios1">
-                        Положительный результат тестирования
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="quantity_update" id="Radios2" value="2" checked>
-                    <label class="form-check-label" for="Radios2">
-                        Отрицательный результат тестирования
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="quantity_update" id="Radios3" value="3" checked>
-                    <label class="form-check-label" for="Radios3">
-                        Ожидание результатов тестирования
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="quantity_update" id="Radios4" value="4">
-                    <label class="form-check-label" for="Radios4">
-                        Был в контакте с подтвержденным случаем
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="quantity_update" id="Radios5" value="5">
-                    <label class="form-check-label" for="Radios5">
-                        Был в контакте с потенциальным носителем вируса
-                    </label>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-success">Подтвердить</button>
-        </form><br><br>
-    </div>
-    <?php
-    }
-    else {
-        require_once('auth.php');
-    }
-    ?>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
-</body>
-
-</html>

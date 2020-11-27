@@ -1,8 +1,16 @@
 <?php
 session_start();
-$_SESSION['user'] = false;
-$user = $_SESSION['user'];
 require_once "db.php";
+
+$users = mysqli_query($connection, "SELECT * FROM `users`");
+
+if (!isset($_SESSION['user'])) {
+    $_SESSION['user'] = false;
+    $user = $_SESSION['user'];
+} else {
+    $user = $_SESSION['user'];
+}
+
 $num_rows = mysqli_num_rows($users);
 ?>
 <!DOCTYPE html>
@@ -37,7 +45,7 @@ $num_rows = mysqli_num_rows($users);
                 <div class="sign jusyfy-content-center">
                     <div class="title"><h3>В зоне риска?</h3></div>
                     <a href="/includes/reg.php" class="btn btn-primary">Зарегистрироватся</a><br><br>
-                    <a href="/includes/divarication.php" class="btn btn-success">Войти</a>
+                    <a href="/includes/auth.php" class="btn btn-success">Войти</a>
                 </div> <br><br>
                 <?php
                 }?>
