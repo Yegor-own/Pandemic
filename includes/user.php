@@ -51,6 +51,7 @@ if (isset($_SESSION['user'])) {
         <form action="divarication.php" method="post">
             <input name="reset" type="submit" class="btn btn-warning" value="Выйти">
         </form><br>
+        <span>Что делать?</span><a href="instruction.html" class="btn btn-primary">Не отображается карта</a><br>
         <div id="mapOne" style="height: 400px;"></div><br>
         <form action="divarication.php" method="post">
             <div class="title">

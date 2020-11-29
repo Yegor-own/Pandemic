@@ -14,6 +14,8 @@ $username = "id15492860_admin";
 $password = "m==?w{TsNl3Z{YO6";
 $database = "id15492860_helth";
 
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 $connection = mysqli_connect($servername, $username, $password, $database);
 // Check connection
 if (!$connection) {

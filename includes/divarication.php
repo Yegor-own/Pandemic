@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once ("../db.php");
 session_start();
 
@@ -52,7 +52,7 @@ if (isset($_POST['reg_login']) and
         $user = mysqli_query($connection, "SELECT * FROM `users` WHERE `login`='". $_POST['reg_login'] ."'");
         $num_rows = mysqli_num_rows($user);
         if (!$num_rows) {
-            //mysqli_query($connection, "INSERT INTO `cameras` (`addres`, `location`, `location2`, `descr`, `owner`) VALUES ('".$_POST['adres']."','".$_POST['location1']."', '".$_POST['location2']."', '".$_POST['quantity']."', '".$_POST['ownr']."')") 
+            //mysqli_query($connection, "INSERT INTO `cameras` (`addres`, `location`, `location2`, `descr`, `owner`) VALUES ('".$_POST['adres']."','".$_POST['location1']."', '".$_POST['location2']."', '".$_POST['quantity']."', '".$_POST['ownr']."')")
             $add_user = mysqli_query($connection, $sign);
             if($add_user) {
                 $_SESSION['user'] = true;
@@ -60,6 +60,31 @@ if (isset($_POST['reg_login']) and
                 $login = $_SESSION['login'];
                 $location_user = mysqli_query($connection, "SELECT * FROM `users` WHERE `login`='$login'");
                 $_SESSION['user-info'] = mysqli_fetch_assoc($location_user);
+
+                //===================================================================================================================
+                //Добавление опасных мест в бд
+                $place = $_POST['adres2'];
+                $place_num = mysqli_query($connection, "SELECT * FROM `users` WHERE `place`='$place' OR `place2`='$place'");
+                $num_of_adresses = mysqli_num_rows($place_num);
+                if ($num_of_adresses >= 10) {
+                    $loc = $_POST['location1_p'];
+                    $loc2 = $_POST['location2_p'];
+                    $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`) VALUES ('$place', '$loc', '$loc2')";
+                    $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                }
+
+                $place = $_POST['adres3'];
+                $place_num = mysqli_query($connection, "SELECT * FROM `users` WHERE `place`='$place' OR `place2`='$place'");
+                $num_of_adresses = mysqli_num_rows($place_num);
+                if ($num_of_adresses >= 10) {
+                    $loc = $_POST['location1_p2'];
+                    $loc2 = $_POST['location2_p2'];
+                    $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`) VALUES ('$place', '$loc', '$loc2')";
+                    $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                }
+
+                //====================================================================================================================
+                //Вход на страничку пользователя
                 header('Location: /includes/user.php');
                 exit();
             } else {
@@ -92,6 +117,7 @@ if (isset($_POST['auth-login']) and isset($_POST['auth-password'])) {
         $_SESSION['user-info'] = mysqli_fetch_assoc($check_user);
         $_SESSION['login'] = $_POST['auth-login'];
         $_SESSION['user'] = true;
+        $login = $_SESSION['login'];
         header("Location: /includes/user.php");
         exit();
     }
@@ -125,5 +151,3 @@ if (isset($_POST['quantity_update'])) {
         exit();
     }
 }
-
-

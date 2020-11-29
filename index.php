@@ -20,8 +20,8 @@ $num_rows = mysqli_num_rows($users);
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-
-    <style>
+    <link rel="stylesheet" href="style.css">
+    <!-- <style>
         html, body{
             height: 97%;
         }
@@ -29,16 +29,15 @@ $num_rows = mysqli_num_rows($users);
         .container-fluid, .row, #map {
             height: 98%;
         }
-    </style>
+    </style> -->
 </head>
 <body>
     <?php require('includes/navbar.php'); ?>
 
     <div class="container-fluid">
         <br>
-        <div class="row">
-            <div class="map col-9" id="map"></div>
-            <div class="sidebar col-3">
+        <div class="row" id="row">
+            <div id="sidebar" class="order-2 col-3">
             <?php
             if (!$user) {
                 ?>
@@ -78,13 +77,39 @@ $num_rows = mysqli_num_rows($users);
                     <p><img src="orange.png" height="15px" alt=""> - Отрицательный результат тестирования, <br>Ожидание результатов тестирования, <br>Был в контакте с подтвержденным случаем</p>
                 </div>
             </div>
+            <div class="order-1 col-9" id="map"></div>
         </div>
     </div>
-    
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script>
+
+        let pageWidth = document.documentElement.scrollWidth;
+        let pageHeight = document.documentElement.scrollHeight;
+        pageHeight = pageHeight - 100;
+        if (pageWidth <= 980) {
+            let row = document.getElementById('row');
+            let map_class = document.getElementById('map');
+            let sidebar_class = document.getElementById('sidebar');
+            row.classList.toggle("row");
+            map_class.classList.toggle("order-1");
+            map_class.classList.toggle("col-9");
+            map_class.classList.toggle("col");
+            sidebar_class.classList.toggle("order-2");
+            sidebar_class.classList.toggle("col");
+            sidebar_class.classList.toggle("col-3");
+            pageWidth = pageWidth - 50;
+            pageHeight = pageHeight - 350;
+            $(".row").css("padding", "10px");
+            $("#map").css("height", pageHeight);
+            $("#map").css("width", pageWidth);
+        }
+        $("#map").css("height", pageHeight);
+        console.log(pageWidth);
+        console.log(pageHeight);
+
         let map = L.map('map').setView([56.8519000, 60.6122000], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -130,7 +155,7 @@ $num_rows = mysqli_num_rows($users);
                     let loc2_p2 = '<?php echo $home['loc2_p2']; ?>';
                     L.marker([loc_p2, loc2_p2], {icon: risk}).addTo(map)
                 }
-                
+
             }
             </script>
         <?php
