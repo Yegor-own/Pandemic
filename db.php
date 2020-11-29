@@ -17,7 +17,7 @@ $database = "id15492860_helth";
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 $connection = mysqli_connect($servername, $username, $password, $database);
-// Check connection
+// Check connection   
 if (!$connection) {
     die("Connection failed: " . mysqli_connect_error());
 }
