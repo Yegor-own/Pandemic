@@ -1,3 +1,8 @@
+<?php
+session_start();
+
+if (isset($_SESSION['errors'])) $err = $_SESSION['errors'];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +16,14 @@
 </head>
 <body>
     <?php require_once "navbar.php"; ?>
-    <div class="container reg border-secondary"><br><br>
+    <div class="container reg border-secondary"><br>
+    <?php
+    if (isset($err)) {
+        echo '<p class="alert-danger">' . $err . '</p>';
+        unset($err);
+        unset($_SESSION['errors']);
+    }
+    ?><br>
         <form action="divarication.php" method="post">
             <div class="title">
                 <h1>Зарегестрироваться</h1>

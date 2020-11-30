@@ -1,10 +1,14 @@
 <?php
 session_start();
 
-if (isset($_SESSION['success-update'])) $status_update = $_SESSION['status-update'];
+if (isset($_SESSION['success-update']) and $_SESSION['success-update']) $status_update = $_SESSION['status-update'];
 if (isset($_SESSION['user'])) {
     $user = $_SESSION['user'];
     $user_info = $_SESSION['user-info'];
+    if (isset($_SESSION['danger-place']))
+        $danger = $_SESSION['danger-place'];
+    if (isset($_SESSION['danger-place2']))
+        $danger2 = $_SESSION['danger-place'];
 }
 
 ?>
@@ -25,7 +29,7 @@ if (isset($_SESSION['user'])) {
     <?php if ($user) { ?>
     <div class="container"><br><br>
     <?php
-    if (isset($status_update)) { 
+    if (isset($status_update)) {
         switch ($status_update) {
             case 1:
                 $print = 'Положительный результат тестирования';
@@ -45,13 +49,24 @@ if (isset($_SESSION['user'])) {
         }
         echo '<p class="alert-success"> Удачно обновлен статус на ' . $print . '</p>';
         $_SESSION['success-update'] = false;
+        unset($_SESSION['success-update']);
+        unset($_SESSION['status-update']);
+        unset($status_update);
     }
     ?>
 
         <form action="divarication.php" method="post">
             <input name="reset" type="submit" class="btn btn-warning" value="Выйти">
         </form><br>
-        <span>Что делать?</span><a href="instruction.html" class="btn btn-primary">Не отображается карта</a><br>
+        <span>Что делать?   </span><a href="instruction.html" class="btn btn-primary">Не отображается карта</a><br><br>
+        <?php
+        if (isset($danger)) {
+            echo '<p class="alert-danger">Часто посещаемое место №1 стало опасно в связи с повышеным риском забольевания по адресу ' . $danger . '</p><br>';
+        }
+        if (isset($danger2)) {
+            echo '<p class="alert-danger">Часто посещаемое место №2 стало опасно в связи с повышеным риском забольевания по адресу ' . $danger2 . '</p><br>';
+        }
+        ?>
         <div id="mapOne" style="height: 400px;"></div><br>
         <form action="divarication.php" method="post">
             <div class="title">
@@ -125,28 +140,28 @@ if (isset($_SESSION['user'])) {
                     let loc_p = '<?php echo $user_info['loc_p']; ?>';
                     let loc2_p = '<?php echo $user_info['loc2_p']; ?>';
                     L.marker([loc_p, loc2_p], {icon: ile}).addTo(mapOne)
-                        .bindPopup('Ваше часто посещаепое место №1')
+                        .bindPopup('Ваше часто посещаепое место №1 <br> <?php echo $user_info['place']; ?> <br> <?php if ($danger) echo 'Это место стало опастно для вас есть риск заражения' ?>')
                         .openPopup();
                     let loc_p2 = '<?php echo $user_info['loc_p2']; ?>';
                     let loc2_p2 = '<?php echo $user_info['loc2_p2']; ?>';
                     L.marker([loc_p2, loc2_p2], {icon: ile}).addTo(mapOne)
-                        .bindPopup('Ваше часто посещаепое место №2')
+                        .bindPopup('Ваше часто посещаепое место №2 <br> <?php echo $user_info['place2']; ?> <br> <?php if ($danger2) echo 'Это место стало опастно для вас есть риск заражения' ?>')
                         .openPopup();
                 } else {
                     let loc_p = '<?php echo $user_info['loc_p']; ?>';
                     let loc2_p = '<?php echo $user_info['loc2_p']; ?>';
                     L.marker([loc_p, loc2_p], {icon: risk}).addTo(mapOne)
-                        .bindPopup('Ваше часто посещаепое место №1')
+                        .bindPopup('Ваше часто посещаепое место №1 <br> <?php echo $user_info['place']; ?> <br> <?php if ($danger) echo 'Это место стало опастно для вас есть риск заражения' ?>')
                         .openPopup();
                     let loc_p2 = '<?php echo $user_info['loc_p2']; ?>';
                     let loc2_p2 = '<?php echo $user_info['loc2_p2']; ?>';
                     L.marker([loc_p2, loc2_p2], {icon: risk}).addTo(mapOne)
-                        .bindPopup('Ваше часто посещаепое место №2')
+                        .bindPopup('Ваше часто посещаепое место №2 <br> <?php echo $user_info['place2']; ?> <br> <?php if ($danger2) echo 'Это место стало опастно для вас есть риск заражения' ?>')
                         .openPopup();
                 }
             }
         );
-        
+
     </script>
     <?php } ?>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>

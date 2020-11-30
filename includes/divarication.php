@@ -60,27 +60,38 @@ if (isset($_POST['reg_login']) and
                 $login = $_SESSION['login'];
                 $location_user = mysqli_query($connection, "SELECT * FROM `users` WHERE `login`='$login'");
                 $_SESSION['user-info'] = mysqli_fetch_assoc($location_user);
+                $user_info = $_SESSION['user-info'];
 
                 //===================================================================================================================
                 //Добавление опасных мест в бд
-                $place = $_POST['adres2'];
+                $place = $user_info['place'];
                 $place_num = mysqli_query($connection, "SELECT * FROM `users` WHERE `place`='$place' OR `place2`='$place'");
                 $num_of_adresses = mysqli_num_rows($place_num);
                 if ($num_of_adresses >= 10) {
-                    $loc = $_POST['location1_p'];
-                    $loc2 = $_POST['location2_p'];
-                    $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`) VALUES ('$place', '$loc', '$loc2')";
-                    $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                    $dg_pl_num = mysqli_query($connection, "SELECT * FROM `danger_places` WHERE `adres`='$place'");
+                    $num_of_dg_places = mysqli_num_rows($dg_pl_num);
+                    $_SESSION['danger-place'] = $place;
+                    if ($num_of_dg_places == 0) {
+                        $loc = $user_info['loc_p'];
+                        $loc2 = $user_info['loc2_p'];
+                        $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`) VALUES ('$place', '$loc', '$loc2')";
+                        $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                    }
                 }
 
-                $place = $_POST['adres3'];
+                $place = $user_info['place2'];
                 $place_num = mysqli_query($connection, "SELECT * FROM `users` WHERE `place`='$place' OR `place2`='$place'");
                 $num_of_adresses = mysqli_num_rows($place_num);
                 if ($num_of_adresses >= 10) {
-                    $loc = $_POST['location1_p2'];
-                    $loc2 = $_POST['location2_p2'];
-                    $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`) VALUES ('$place', '$loc', '$loc2')";
-                    $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                    $dg_pl_num = mysqli_query($connection, "SELECT * FROM `danger_places` WHERE `adres`='$place'");
+                    $num_of_dg_places = mysqli_num_rows($dg_pl_num);
+                    $_SESSION['danger-place2'] = $place;
+                    if ($num_of_dg_places == 0) {
+                        $loc = $user_info['loc_p2'];
+                        $loc2 = $user_info['loc2_p2'];
+                        $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`) VALUES ('$place', '$loc', '$loc2')";
+                        $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                    }
                 }
 
                 //====================================================================================================================
@@ -115,9 +126,27 @@ if (isset($_POST['auth-login']) and isset($_POST['auth-password'])) {
     $num_rows = mysqli_num_rows($check_user);
     if ($num_rows == 1) {
         $_SESSION['user-info'] = mysqli_fetch_assoc($check_user);
+        $user_info = $_SESSION['user-info'];
         $_SESSION['login'] = $_POST['auth-login'];
         $_SESSION['user'] = true;
         $login = $_SESSION['login'];
+
+        //===================================================================================================================
+        //Проверка пользовательских мест в базе данных
+        $place = $user_info['place'];
+        $place_num = mysqli_query($connection, "SELECT * FROM `danger_places` WHERE `adres`='$place'");
+        $num_of_adresses = mysqli_num_rows($place_num);
+        if ($num_of_adresses >= 0) {
+            $_SESSION['danger-place'] = $place;
+        }
+
+        $place = $user_info['place2'];
+        $place_num = mysqli_query($connection, "SELECT * FROM `danger_places` WHERE `adres`='$place'");
+        $num_of_adresses = mysqli_num_rows($place_num);
+        if ($num_of_adresses >= 0) {
+            $_SESSION['danger-place2'] = $place;
+        }
+
         header("Location: /includes/user.php");
         exit();
     }
