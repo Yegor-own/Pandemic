@@ -2,7 +2,8 @@
 session_start();
 require_once "db.php";
 
-$users = mysqli_query($connection, "SELECT * FROM `users`");
+$sql = "SELECT * FROM `danger_places`";
+$dg_places = mysqli_query($connection, $sql);
 
 if (!isset($_SESSION['user'])) {
     $_SESSION['user'] = false;
@@ -11,7 +12,7 @@ if (!isset($_SESSION['user'])) {
     $user = $_SESSION['user'];
 }
 
-$num_rows = mysqli_num_rows($users);
+$num_rows = mysqli_num_rows($dg_places);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -116,47 +117,69 @@ $num_rows = mysqli_num_rows($users);
         }).addTo(map);
         let counter = '<?php echo $num_rows; ?>';
         let i = 0;
-        let home = L.icon({
-            iconUrl: 'blue.png',
-            iconSize: [10, 10],
-        });
-        let ile = L.icon({
-            iconUrl: 'red.png',
-            iconSize: [10, 10],
-        });
-        let risk = L.icon({
-            iconUrl: 'orange.png',
-            iconSize: [10, 10],
-        });
-    </script>
+    //     let home = L.icon({
+    //         iconUrl: 'blue.png',
+    //         iconSize: [10, 10],
+    //     });
+    //     let ile = L.icon({
+    //         iconUrl: 'red.png',
+    //         iconSize: [10, 10],
+    //     });
+    //     let risk = L.icon({
+    //         iconUrl: 'orange.png',
+    //         iconSize: [10, 10],
+    //     });
+        let circle;
+        let status;
+        let loc;
+        let loc2;
+        let adres;
+        </script>
     <?php
-        $home;
-        while ($home = mysqli_fetch_assoc($users)) {
+        $danger_pl;
+        while ($danger_pl = mysqli_fetch_assoc($dg_places)) {
             ?>
             <script>
-            if (i != counter){
-                i++;
-                let status = '<?php echo $home['status']; ?>';
-                let loc = '<?php echo $home['loc']; ?>';
-                let loc2 = '<?php echo $home['loc2']; ?>';
-                L.marker([loc, loc2], {icon: home}).addTo(map)
-                if (status == '1') {
-                    let loc_p = '<?php echo $home['loc_p']; ?>';
-                    let loc2_p = '<?php echo $home['loc2_p']; ?>';
-                    L.marker([loc_p, loc2_p], {icon: ile}).addTo(map)
-                    let loc_p2 = '<?php echo $home['loc_p2']; ?>';
-                    let loc2_p2 = '<?php echo $home['loc2_p2']; ?>';
-                    L.marker([loc_p2, loc2_p2], {icon: ile}).addTo(map)
-                } else {
-                    let loc_p = '<?php echo $home['loc_p']; ?>';
-                    let loc2_p = '<?php echo $home['loc2_p']; ?>';
-                    L.marker([loc_p, loc2_p], {icon: risk}).addTo(map)
-                    let loc_p2 = '<?php echo $home['loc_p2']; ?>';
-                    let loc2_p2 = '<?php echo $home['loc2_p2']; ?>';
-                    L.marker([loc_p2, loc2_p2], {icon: risk}).addTo(map)
+                loc = '<?php echo $danger_pl['loc']; ?>';
+                loc2 = '<?php echo $danger_pl['loc2']; ?>';
+                status = '<?php echo $danger_pl['status']; ?>';
+                adres = '<?php echo $danger_pl['adres']; ?>';
+                if (status == 4) {
+                    circle = L.circle([loc, loc2], {
+                        color: 'red',
+                        fillColor: 'red',
+                        fillOpacity: 0.5,
+                        radius: 65
+                    }).addTo(map);
+                    circle.bindPopup(adres + '<br> Уровень опастности: очень высокий');
                 }
-
-            }
+                else if (status == 3) {
+                    circle = L.circle([loc, loc2], {
+                        color: 'orange',
+                        fillColor: 'orange',
+                        fillOpacity: 0.5,
+                        radius: 65
+                    }).addTo(map);
+                    circle.bindPopup(adres + '<br> Уровень опастности: высокий');
+                }
+                else if (status == 2) {
+                    circle = L.circle([loc, loc2], {
+                        color: 'yellow',
+                        fillColor: 'yellow',
+                        fillOpacity: 0.5,
+                        radius: 65
+                    }).addTo(map);
+                    circle.bindPopup(adres + '<br> Уровень опастности: средний');
+                }
+                if (status == 1) {
+                    circle = L.circle([loc, loc2], {
+                        color: 'green',
+                        fillColor: 'green',
+                        fillOpacity: 0.5,
+                        radius: 65
+                    }).addTo(map);
+                    circle.bindPopup(adres + '<br> Уровень опастности: небольшой');
+                }
             </script>
         <?php
         }
