@@ -71,6 +71,11 @@ if (isset($_SESSION['user'])) {
             echo '<p class="alert-danger">Часто посещаемое место №2 стало опасно в связи с повышеным риском забольевания по адресу ' . $danger2 . '</p><br>';
         }
         ?>
+        <div class="description">
+            <p><img src="../blue.png" height="15px" alt=""> - Место жительства</p>
+            <p><img src="../red.png" height="15px" alt=""> - Положительный результат тестирования</p>
+            <p><img src="../orange.png" height="15px" alt=""> - Отрицательный результат тестирования, <br>Ожидание результатов тестирования, <br>Был в контакте с подтвержденным случаем</p>
+        </div><br>
         <div id="mapOne" style="height: 400px;"></div><br>
         <form action="divarication.php" method="post">
             <div class="title">

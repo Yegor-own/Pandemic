@@ -213,6 +213,10 @@ if (isset($_POST['auth-login']) and isset($_POST['auth-password'])) {
 
         header("Location: /includes/user.php");
         exit();
+    } else {
+        $_SESSION['errors'] = 'Логин или пароль неверны';
+        header("Location: /includes/auth.php");
+        exit();
     }
 }
 

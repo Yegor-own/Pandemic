@@ -36,50 +36,63 @@ $num_rows = mysqli_num_rows($dg_places);
     <?php require('includes/navbar.php'); ?>
 
     <div class="container-fluid">
-        <br>
-        <div class="row" id="row">
-            <div id="sidebar" class="order-2 col-3">
+        <div class="row d-flex justify-content-between menu">
+            <div class="form-inline time">
+                <form class="day_form" action="/includes/divarication.php" method="get">
+                    <input class="btn btn-secondary" type="submit" name="two_days" value="Позовчера"><span>  </span>
+                </form>
+                <form class="day_form" action="/includes/divarication.php" method="get">
+                    <input class="btn btn-secondary" type="submit" name="one_day" value="Вчера"><span>  </span>
+                </form>
+                <form class="day_form" action="/includes/divarication.php" method="get">
+                    <input class="btn btn-secondary" type="submit" name="now" value="Сегодня">
+                </form>
+            </div>
             <?php
             if (!$user) {
-                ?>
-                <div class="sign jusyfy-content-center">
-                    <div class="title"><h3>В зоне риска?</h3></div>
-                    <a href="/includes/reg.php" class="btn btn-primary">Зарегистрироватся</a><br><br>
-                    <a href="/includes/auth.php" class="btn btn-success">Войти</a>
-                </div> <br><br>
-                <?php
-                }?>
-                <style>
-                    .description {
-                        list-style: none;
-                        margin: 0;
-                    }
-                    .home, .il, .risk {
-                        height: 15px;
-                        width: 15px;
-                        border-radius: 50%;
-                    }
-                    .home {
-                        background-color: blue;
-                    }
-                    .il {
-                        background-color: red;
-                    }
-                    .risk {
-                        background-color: orangered;
-                    }
-                    span{
-                        color: black;
-                    }
-                </style>
-                <div class="description">
-                    <p><img src="blue.png" height="15px" alt=""> - Место жительства</p>
-                    <p><img src="red.png" height="15px" alt=""> - Положительный результат тестирования</p>
-                    <p><img src="orange.png" height="15px" alt=""> - Отрицательный результат тестирования, <br>Ожидание результатов тестирования, <br>Был в контакте с подтвержденным случаем</p>
-                </div>
+            ?>
+            <div class="sign">
+                <span class="title">В зоне риска?</span>
+                <a href="/includes/reg.php" class="btn btn-primary">Зарегистрироватся</a>
+                <a href="/includes/auth.php" class="btn btn-success">Войти</a>
             </div>
-            <div class="order-1 col-9" id="map"></div>
+            <?php
+            }?>
+            <style>
+                .menu {
+                    padding-top: 10px;
+                    padding-bottom: 10px;
+                }
+                .title {
+                    font-size: 25px;
+                }
+                .day_form {
+                    margin-left: 5px;
+                }
+                .description {
+                    list-style: none;
+                    margin: 0;
+                }
+                .home, .il, .risk {
+                    height: 15px;
+                    width: 15px;
+                    border-radius: 50%;
+                }
+                .home {
+                    background-color: blue;
+                }
+                .il {
+                    background-color: red;
+                }
+                .risk {
+                    background-color: orangered;
+                }
+                span{
+                    color: black;
+                }
+            </style>
         </div>
+        <div id="map"></div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
@@ -90,23 +103,23 @@ $num_rows = mysqli_num_rows($dg_places);
         let pageWidth = document.documentElement.scrollWidth;
         let pageHeight = document.documentElement.scrollHeight;
         pageHeight = pageHeight - 100;
-        if (pageWidth <= 980) {
-            let row = document.getElementById('row');
-            let map_class = document.getElementById('map');
-            let sidebar_class = document.getElementById('sidebar');
-            row.classList.toggle("row");
-            map_class.classList.toggle("order-1");
-            map_class.classList.toggle("col-9");
-            map_class.classList.toggle("col");
-            sidebar_class.classList.toggle("order-2");
-            sidebar_class.classList.toggle("col");
-            sidebar_class.classList.toggle("col-3");
-            pageWidth = pageWidth - 50;
-            pageHeight = pageHeight - 350;
-            $(".row").css("padding", "10px");
-            $("#map").css("height", pageHeight);
-            $("#map").css("width", pageWidth);
-        }
+        // if (pageWidth <= 980) {
+        //     let row = document.getElementById('row');
+        //     let map_class = document.getElementById('map');
+        //     let sidebar_class = document.getElementById('sidebar');
+        //     row.classList.toggle("row");
+        //     map_class.classList.toggle("order-1");
+        //     map_class.classList.toggle("col-9");
+        //     map_class.classList.toggle("col");
+        //     sidebar_class.classList.toggle("order-2");
+        //     sidebar_class.classList.toggle("col");
+        //     sidebar_class.classList.toggle("col-3");
+        //     pageWidth = pageWidth - 50;
+        //     pageHeight = pageHeight - 350;
+        //     $(".row").css("padding", "10px");
+        //     $("#map").css("height", pageHeight);
+        //     $("#map").css("width", pageWidth);
+        // }
         $("#map").css("height", pageHeight);
         console.log(pageWidth);
         console.log(pageHeight);
