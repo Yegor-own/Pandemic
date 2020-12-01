@@ -136,15 +136,23 @@ if (isset($_POST['auth-login']) and isset($_POST['auth-password'])) {
         $place = $user_info['place'];
         $place_num = mysqli_query($connection, "SELECT * FROM `danger_places` WHERE `adres`='$place'");
         $num_of_adresses = mysqli_num_rows($place_num);
-        if ($num_of_adresses >= 0) {
+        if ($num_of_adresses > 0) {
+            $_SESSION['dg'] = true;
             $_SESSION['danger-place'] = $place;
+        } else {
+            unset($_SESSION['dg']);
+            unset($_SESSION['danger-place']);
         }
 
-        $place = $user_info['place2'];
-        $place_num = mysqli_query($connection, "SELECT * FROM `danger_places` WHERE `adres`='$place'");
-        $num_of_adresses = mysqli_num_rows($place_num);
-        if ($num_of_adresses >= 0) {
-            $_SESSION['danger-place2'] = $place;
+        $place2 = $user_info['place2'];
+        $place_num2 = mysqli_query($connection, "SELECT * FROM `danger_places` WHERE `adres`='$place2'");
+        $num_of_adresses2 = mysqli_num_rows($place_num2);
+        if ($num_of_adresses2 > 0) {
+            $_SESSION['dg2'] = true;
+            $_SESSION['danger-place2'] = $place2;
+        } else {
+            unset($_SESSION['dg2']);
+            unset($_SESSION['danger-place2']);
         }
 
         header("Location: /includes/user.php");

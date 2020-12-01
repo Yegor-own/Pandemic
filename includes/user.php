@@ -5,10 +5,14 @@ if (isset($_SESSION['success-update']) and $_SESSION['success-update']) $status_
 if (isset($_SESSION['user'])) {
     $user = $_SESSION['user'];
     $user_info = $_SESSION['user-info'];
-    if (isset($_SESSION['danger-place']))
-        $danger = $_SESSION['danger-place'];
-    if (isset($_SESSION['danger-place2']))
-        $danger2 = $_SESSION['danger-place'];
+    if (isset($_SESSION['danger-place'])) {
+            $danger = $_SESSION['danger-place'];
+            $dg = $_SESSION['dg'];
+        }
+    if (isset($_SESSION['danger-place2'])) {
+            $danger2 = $_SESSION['danger-place2'];
+            $dg2 = $_SESSION['dg2'];
+        }
 }
 
 ?>
@@ -60,10 +64,10 @@ if (isset($_SESSION['user'])) {
         </form><br>
         <span>Что делать?   </span><a href="instruction.html" class="btn btn-primary">Не отображается карта</a><br><br>
         <?php
-        if (isset($danger)) {
+        if (isset($dg) and $dg) {
             echo '<p class="alert-danger">Часто посещаемое место №1 стало опасно в связи с повышеным риском забольевания по адресу ' . $danger . '</p><br>';
         }
-        if (isset($danger2)) {
+        if (isset($dg2) and $dg2) {
             echo '<p class="alert-danger">Часто посещаемое место №2 стало опасно в связи с повышеным риском забольевания по адресу ' . $danger2 . '</p><br>';
         }
         ?>
@@ -140,30 +144,34 @@ if (isset($_SESSION['user'])) {
                     let loc_p = '<?php echo $user_info['loc_p']; ?>';
                     let loc2_p = '<?php echo $user_info['loc2_p']; ?>';
                     L.marker([loc_p, loc2_p], {icon: ile}).addTo(mapOne)
-                        .bindPopup('Ваше часто посещаепое место №1 <br> <?php echo $user_info['place']; ?> <br> <?php if ($danger) echo 'Это место стало опастно для вас есть риск заражения' ?>')
+                        .bindPopup('Ваше часто посещаепое место №1 <br> <?php echo $user_info['place']; ?> <br> <?php if (isset($dg) and $dg) echo 'Это место стало опастно для вас есть риск заражения'; ?>')
                         .openPopup();
                     let loc_p2 = '<?php echo $user_info['loc_p2']; ?>';
                     let loc2_p2 = '<?php echo $user_info['loc2_p2']; ?>';
                     L.marker([loc_p2, loc2_p2], {icon: ile}).addTo(mapOne)
-                        .bindPopup('Ваше часто посещаепое место №2 <br> <?php echo $user_info['place2']; ?> <br> <?php if ($danger2) echo 'Это место стало опастно для вас есть риск заражения' ?>')
+                        .bindPopup('Ваше часто посещаепое место №2 <br> <?php echo $user_info['place2']; ?> <br> <?php if (isset($dg2) and $dg2) echo 'Это место стало опастно для вас есть риск заражения'; ?>')
                         .openPopup();
                 } else {
                     let loc_p = '<?php echo $user_info['loc_p']; ?>';
                     let loc2_p = '<?php echo $user_info['loc2_p']; ?>';
                     L.marker([loc_p, loc2_p], {icon: risk}).addTo(mapOne)
-                        .bindPopup('Ваше часто посещаепое место №1 <br> <?php echo $user_info['place']; ?> <br> <?php if ($danger) echo 'Это место стало опастно для вас есть риск заражения' ?>')
+                        .bindPopup('Ваше часто посещаепое место №1 <br> <?php echo $user_info['place']; ?> <br> <?php if (isset($dg) and $dg) echo 'Это место стало опастно для вас есть риск заражения'; ?>')
                         .openPopup();
                     let loc_p2 = '<?php echo $user_info['loc_p2']; ?>';
                     let loc2_p2 = '<?php echo $user_info['loc2_p2']; ?>';
                     L.marker([loc_p2, loc2_p2], {icon: risk}).addTo(mapOne)
-                        .bindPopup('Ваше часто посещаепое место №2 <br> <?php echo $user_info['place2']; ?> <br> <?php if ($danger2) echo 'Это место стало опастно для вас есть риск заражения' ?>')
+                        .bindPopup('Ваше часто посещаепое место №2 <br> <?php echo $user_info['place2']; ?> <br> <?php if (isset($dg2) and $dg2) echo 'Это место стало опастно для вас есть риск заражения'; ?>')
                         .openPopup();
                 }
             }
         );
 
     </script>
-    <?php } ?>
+    <?php
+    }
+    unset($danger);
+    unset($danger2);
+    ?>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
