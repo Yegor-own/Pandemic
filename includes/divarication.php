@@ -78,6 +78,10 @@ if (isset($_POST['reg_login']) and
                             $status = 4;
                             $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`, `status`) VALUES ('$place', '$loc', '$loc2', '$status')";
                             $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                        } else {
+                            $status = 4;
+                            $insert_query = "UPDATE `danger_places` SET `status`='$status' WHERE `adres`='$place'";
+                            $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
                         }
                     }
                     else if ($num_of_adresses >= 15) {
@@ -86,6 +90,10 @@ if (isset($_POST['reg_login']) and
                             $loc2 = $user_info['loc2_p'];
                             $status = 3;
                             $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`, `status`) VALUES ('$place', '$loc', '$loc2', '$status')";
+                            $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                        } else {
+                            $status = 3;
+                            $insert_query = "UPDATE `danger_places` SET `status`='$status' WHERE `adres`='$place'";
                             $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
                         }
                     }
@@ -96,13 +104,21 @@ if (isset($_POST['reg_login']) and
                             $status = 2;
                             $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`, `status`) VALUES ('$place', '$loc', '$loc2', '$status')";
                             $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                        } else {
+                            $status = 2;
+                            $insert_query = "UPDATE `danger_places` SET `status`='$status' WHERE `adres`='$place'";
+                            $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
                         }
                     }
-                    if ($num_of_dg_places == 0) {
+                    else if ($num_of_dg_places == 0) {
                         $loc = $user_info['loc_p'];
                         $loc2 = $user_info['loc2_p'];
                         $status = 1;
                         $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`, `status`) VALUES ('$place', '$loc', '$loc2', '$status')";
+                        $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                    } else {
+                        $status = 1;
+                        $insert_query = "UPDATE `danger_places` SET `status`='$status' WHERE `adres`='$place'";
                         $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
                     }
                 }
@@ -121,6 +137,10 @@ if (isset($_POST['reg_login']) and
                             $status = 4;
                             $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`, `status`) VALUES ('$place', '$loc', '$loc2', '$status')";
                             $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                        } else {
+                            $status = 4;
+                            $insert_query = "UPDATE `danger_places` SET `status`='$status' WHERE `adres`='$place'";
+                            $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
                         }
                     }
                     else if ($num_of_adresses >= 15) {
@@ -129,6 +149,10 @@ if (isset($_POST['reg_login']) and
                             $loc2 = $user_info['loc2_p2'];
                             $status = 3;
                             $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`, `status`) VALUES ('$place', '$loc', '$loc2', '$status')";
+                            $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                        } else {
+                            $status = 3;
+                            $insert_query = "UPDATE `danger_places` SET `status`='$status' WHERE `adres`='$place'";
                             $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
                         }
                     }
@@ -139,14 +163,22 @@ if (isset($_POST['reg_login']) and
                             $status = 2;
                             $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`, `status`) VALUES ('$place', '$loc', '$loc2', '$status')";
                             $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                        } else {
+                            $status = 2;
+                            $insert_query = "UPDATE `danger_places` SET `status`='$status' WHERE `adres`='$place'";
+                            $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
                         }
                     }
-                    if ($num_of_dg_places == 0) {
+                    else if ($num_of_dg_places == 0) {
                         $loc = $user_info['loc_p2'];
                         $loc2 = $user_info['loc2_p2'];
                         $status = 1;
                         $insert_query = "INSERT INTO `danger_places` (`adres`, `loc`, `loc2`, `status`) VALUES ('$place', '$loc', '$loc2', '$status')";
                         $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
+                    } else {
+                        $status = 1;
+                            $insert_query = "UPDATE `danger_places` SET `status`='$status' WHERE `adres`='$place'";
+                            $insert = mysqli_query($connection, $insert_query) OR Die(' SQL Query not possible!');
                     }
                 }
 
@@ -247,4 +279,18 @@ if (isset($_POST['quantity_update'])) {
         header("Location: user.php");
         exit();
     }
+}
+
+//======================================================================================================================
+//Проверка дня карты
+if (isset($_GET['one_day'])) {
+    $_SESSION['day_one'] = true;
+    header("Location: ../index.php");
+    exit();
+}
+
+if (isset($_GET['two_day'])) {
+    $_SESSION['two_one'] = true;
+    header("Location: ../index.php");
+    exit();
 }

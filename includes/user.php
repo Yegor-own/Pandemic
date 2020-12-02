@@ -7,11 +7,11 @@ if (isset($_SESSION['user'])) {
     $user_info = $_SESSION['user-info'];
     if (isset($_SESSION['danger-place'])) {
             $danger = $_SESSION['danger-place'];
-            $dg = $_SESSION['dg'];
+            if (isset($_SESSION['dg'])) $dg = $_SESSION['dg'];
         }
     if (isset($_SESSION['danger-place2'])) {
             $danger2 = $_SESSION['danger-place2'];
-            $dg2 = $_SESSION['dg2'];
+            if (isset($_SESSION['dg2'])) $dg2 = $_SESSION['dg2'];
         }
 }
 
@@ -26,6 +26,7 @@ if (isset($_SESSION['user'])) {
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -62,13 +63,14 @@ if (isset($_SESSION['user'])) {
         <form action="divarication.php" method="post">
             <input name="reset" type="submit" class="btn btn-warning" value="Выйти">
         </form><br>
-        <span>Что делать?   </span><a href="instruction.html" class="btn btn-primary">Не отображается карта</a><br><br>
+        <span>Что делать?   </span><button class="instruction btn btn-primary">Не отображается карта</button><br><br>
+        <div class="instruction_body"></div>
         <?php
-        if (isset($dg) and $dg) {
-            echo '<p class="alert-danger">Часто посещаемое место №1 стало опасно в связи с повышеным риском забольевания по адресу ' . $danger . '</p><br>';
+        if (isset($dg)) {
+            if (isset($dg)) echo '<p class="alert-danger">Часто посещаемое место №1 стало опасно в связи с повышеным риском забольевания по адресу ' . $danger . '</p><br>';
         }
-        if (isset($dg2) and $dg2) {
-            echo '<p class="alert-danger">Часто посещаемое место №2 стало опасно в связи с повышеным риском забольевания по адресу ' . $danger2 . '</p><br>';
+        if (isset($dg2)) {
+            if (isset($dg2)) echo '<p class="alert-danger">Часто посещаемое место №2 стало опасно в связи с повышеным риском забольевания по адресу ' . $danger2 . '</p><br>';
         }
         ?>
         <div class="description">
@@ -119,6 +121,12 @@ if (isset($_SESSION['user'])) {
         </form><br><br>
     </div>
     <script>
+        $(".instruction").on('click', function(instuct) {
+            $(".instruction_body").html("<div class=\"row d-flex justify-content-between\"><br><img class=\"border border-dark\" src=\"images/1.jpg\" width=\"40%\" alt=\"\"><img class=\"border border-dark\" src=\"images/2.jpg\" width=\"40%\" alt=\"\"></div><br><div class=\"row d-flex justify-content-between\"><br><img class=\"border border-dark\" src=\"images/3.jpg\" width=\"40%\" alt=\"\"><img class=\"border border-dark\" src=\"images/4.jpg\" width=\"40%\" alt=\"\"></div><br><div class=\"row d-flex justify-content-between\"><br><img class=\"border border-dark\" src=\"images/5.jpg\" width=\"40%\" alt=\"\"><img class=\"border border-dark\" src=\"images/6.jpg\" width=\"40%\" alt=\"\"></div><br>")
+        });
+        $(".instruction").off('click', function(instuct_off) {
+            $(".instruction_body").html(" ");
+        });
         navigator.geolocation.getCurrentPosition(
             function(position) {
                 let lat = position.coords.latitude;
@@ -177,7 +185,6 @@ if (isset($_SESSION['user'])) {
     unset($danger);
     unset($danger2);
     ?>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </body>

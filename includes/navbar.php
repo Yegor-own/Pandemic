@@ -12,9 +12,5 @@
                 <a class="nav-link" href="/includes/auth.php" tabindex="-1" aria-disabled="true">Ваша страница</a>
             </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0" action="../index.php" method="get">
-            <input class="form-control mr-sm-2" type="search" name="search" placeholder="Искать" aria-label="Search">
-            <button class="btn btn-primary my-2 my-sm-0" type="submit">Поиск</button>
-        </form>
     </div>
 </nav>
