@@ -7,15 +7,24 @@ $dg_places = mysqli_query($connection, $sql);
 
 $last_dat = mysqli_query($connection, $sql);
 
-$last_date = mysqli_fetch_assoc($last_dat);
-$_SESSION['date'] = $last_date['date'];
-$date = $_SESSION['date'];
+// $last_date = mysqli_fetch_assoc($last_dat);
+// $_SESSION['date'] = $last_date['date'];
+// $date = $_SESSION['date'];
 
 if (!isset($_SESSION['user'])) {
     $_SESSION['user'] = false;
     $user = $_SESSION['user'];
-    if (isset($_SESSION['day_one'])) $day = $_SESSION['day_one'];
-    elseif (isset($_SESSION['day_two'])) $day = $_SESSION['day_two'];
+    if (isset($_SESSION['day'])) {
+        $day = $_SESSION['day'];
+        if ($day == 'yesterday') {
+            $sql = "SELECT * FROM `danger_places` WHERE `date`=subdate(now(),1)";
+            $dg_places_date1 = mysqli_query($connection, $sql);
+        }
+        elseif ($day == 'twodaysago') {
+            $sql = "SELECT * FROM `danger_places` WHERE `date`=subdate(now(),2)";
+            $dg_places_date2 = mysqli_query($connection, $sql);
+        }
+    }
 } else {
     $user = $_SESSION['user'];
 }
@@ -47,12 +56,14 @@ $num_rows = mysqli_num_rows($dg_places);
         <div class="row d-flex justify-content-between menu">
             <div class="form-inline time">
                 <form class="day_form" action="/includes/divarication.php" method="get">
-                    <input class="btn btn-secondary" type="submit" name="two_day" value="Позовчера"><span>  </span>
+                    <input class="btn btn-secondary" type="submit" name="day" value="Позовчера"><span>  </span>
                 </form>
                 <form class="day_form" action="/includes/divarication.php" method="get">
-                    <input class="btn btn-secondary" type="submit" name="one_day" value="Вчера"><span>  </span>
+                    <input class="btn btn-secondary" type="submit" name="day" value="Вчера"><span>  </span>
                 </form>
-                <a href="/" class="btn btn-secondary">Сегодня</a>
+                <form class="day_form" action="/includes/divarication.php" method="get">
+                    <input class="btn btn-secondary" type="submit" name="day" value="Сегодня"><span>  </span>
+                </form>
             </div>
             <?php
             if (!$user) {
@@ -155,7 +166,8 @@ $num_rows = mysqli_num_rows($dg_places);
         let adres;
         </script>
     <?php
-        if (!isset($day)) {
+    if (isset($day)) {
+        if ($day == 'today') {
             while ($danger_pl = mysqli_fetch_assoc($dg_places)) {
                 ?>
                 <script>
@@ -203,8 +215,8 @@ $num_rows = mysqli_num_rows($dg_places);
             <?php
             }
         }
-        else {
-            while ($danger_pl = mysqli_fetch_assoc($dg_places)) {
+        elseif ($day == 'twodaysago') {
+            while ($danger_pl = mysqli_fetch_assoc($dg_places2)) {
                 ?>
                 <script>
                     loc = '<?php echo $danger_pl['loc']; ?>';
@@ -251,7 +263,102 @@ $num_rows = mysqli_num_rows($dg_places);
             <?php
             }
         }
-        
+        elseif ($day == 'yesterday') {
+            while ($danger_pl = mysqli_fetch_assoc($dg_places1)) {
+                ?>
+                <script>
+                    loc = '<?php echo $danger_pl['loc']; ?>';
+                    loc2 = '<?php echo $danger_pl['loc2']; ?>';
+                    status = '<?php echo $danger_pl['status']; ?>';
+                    adres = '<?php echo $danger_pl['adres']; ?>';
+                    if (status == 4) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'red',
+                            fillColor: 'red',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(map);
+                        circle.bindPopup(adres + '<br> Уровень опастности: очень высокий');
+                    }
+                    else if (status == 3) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'orange',
+                            fillColor: 'orange',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(map);
+                        circle.bindPopup(adres + '<br> Уровень опастности: высокий');
+                    }
+                    else if (status == 2) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'yellow',
+                            fillColor: 'yellow',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(map);
+                        circle.bindPopup(adres + '<br> Уровень опастности: средний');
+                    }
+                    if (status == 1) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'green',
+                            fillColor: 'green',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(map);
+                        circle.bindPopup(adres + '<br> Уровень опастности: небольшой');
+                    }
+                </script>
+            <?php
+            }
+        }
+    } else {
+        while ($danger_pl = mysqli_fetch_assoc($dg_places)) {
+            ?>
+            <script>
+                loc = '<?php echo $danger_pl['loc']; ?>';
+                loc2 = '<?php echo $danger_pl['loc2']; ?>';
+                status = '<?php echo $danger_pl['status']; ?>';
+                adres = '<?php echo $danger_pl['adres']; ?>';
+                if (status == 4) {
+                    circle = L.circle([loc, loc2], {
+                        color: 'red',
+                        fillColor: 'red',
+                        fillOpacity: 0.5,
+                        radius: 100
+                    }).addTo(map);
+                    circle.bindPopup(adres + '<br> Уровень опастности: очень высокий');
+                }
+                else if (status == 3) {
+                    circle = L.circle([loc, loc2], {
+                        color: 'orange',
+                        fillColor: 'orange',
+                        fillOpacity: 0.5,
+                        radius: 100
+                    }).addTo(map);
+                    circle.bindPopup(adres + '<br> Уровень опастности: высокий');
+                }
+                else if (status == 2) {
+                    circle = L.circle([loc, loc2], {
+                        color: 'yellow',
+                        fillColor: 'yellow',
+                        fillOpacity: 0.5,
+                        radius: 100
+                    }).addTo(map);
+                    circle.bindPopup(adres + '<br> Уровень опастности: средний');
+                }
+                if (status == 1) {
+                    circle = L.circle([loc, loc2], {
+                        color: 'green',
+                        fillColor: 'green',
+                        fillOpacity: 0.5,
+                        radius: 100
+                    }).addTo(map);
+                    circle.bindPopup(adres + '<br> Уровень опастности: небольшой');
+                }
+            </script>
+        <?php
+        }
+    }
     ?>
 </body>
 </html>

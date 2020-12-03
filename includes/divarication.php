@@ -283,14 +283,20 @@ if (isset($_POST['quantity_update'])) {
 
 //======================================================================================================================
 //Проверка дня карты
-if (isset($_GET['one_day'])) {
-    $_SESSION['day_one'] = true;
-    header("Location: ../index.php");
-    exit();
-}
-
-if (isset($_GET['two_day'])) {
-    $_SESSION['two_one'] = true;
-    header("Location: ../index.php");
-    exit();
+if (isset($_GET['day'])) {
+    if ($_GET['day'] == 'Сегодня'){
+        $_SESSION['day'] = 'today';
+        header("Location: ../index.php");
+        exit();
+    }
+    elseif ($_GET['day'] == 'Вчера') {
+        $_SESSION['day'] = 'yesterday';
+        header("Location: ../index.php");
+        exit();
+    }
+    elseif ($_GET['day'] == 'Позовчера') {
+        $_SESSION['day'] = 'twodaysago';
+        header("Location: ../index.php");
+        exit();
+    }
 }
