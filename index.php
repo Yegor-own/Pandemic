@@ -14,19 +14,20 @@ $last_dat = mysqli_query($connection, $sql);
 if (!isset($_SESSION['user'])) {
     $_SESSION['user'] = false;
     $user = $_SESSION['user'];
-    if (isset($_SESSION['day'])) {
-        $day = $_SESSION['day'];
-        if ($day == 'yesterday') {
-            $sql = "SELECT * FROM `danger_places` WHERE `date`=subdate(now(),1)";
-            $dg_places_date1 = mysqli_query($connection, $sql);
-        }
-        elseif ($day == 'twodaysago') {
-            $sql = "SELECT * FROM `danger_places` WHERE `date`=subdate(now(),2)";
-            $dg_places_date2 = mysqli_query($connection, $sql);
-        }
-    }
 } else {
     $user = $_SESSION['user'];
+}
+
+if (isset($_SESSION['day'])) {
+    $day = $_SESSION['day'];
+    if ($day == 'yesterday') {
+        $sql = "SELECT * FROM `danger_places` WHERE `date` <= subdate(now(),1) AND `date` > subdate(now(),2)";
+        $dg_places_date1 = mysqli_query($connection, $sql);
+    }
+    elseif ($day == 'twodaysago') {
+        $sql = "SELECT * FROM `danger_places` WHERE `date` <= subdate(now(),2) AND `date` > subdate(now(),3)";
+        $dg_places_date2 = mysqli_query($connection, $sql);
+    }
 }
 
 $num_rows = mysqli_num_rows($dg_places);
@@ -216,7 +217,7 @@ $num_rows = mysqli_num_rows($dg_places);
             }
         }
         elseif ($day == 'twodaysago') {
-            while ($danger_pl = mysqli_fetch_assoc($dg_places2)) {
+            while ($danger_pl = mysqli_fetch_assoc($dg_places_date2)) {
                 ?>
                 <script>
                     loc = '<?php echo $danger_pl['loc']; ?>';
@@ -264,7 +265,7 @@ $num_rows = mysqli_num_rows($dg_places);
             }
         }
         elseif ($day == 'yesterday') {
-            while ($danger_pl = mysqli_fetch_assoc($dg_places1)) {
+            while ($danger_pl = mysqli_fetch_assoc($dg_places_date1)) {
                 ?>
                 <script>
                     loc = '<?php echo $danger_pl['loc']; ?>';

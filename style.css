@@ -1,8 +1,0 @@
-@media (max-width: 800px) {
-    #map {
-        order: 2;
-    }
-    .sidebar {
-        order: 1;
-    }
-}
