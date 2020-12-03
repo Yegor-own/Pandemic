@@ -70,7 +70,6 @@ if (isset($_POST['reg_login']) and
                 if ($num_of_adresses >= 5) {
                     $dg_pl_num = mysqli_query($connection, "SELECT * FROM `danger_places` WHERE `adres`='$place'");
                     $num_of_dg_places = mysqli_num_rows($dg_pl_num);
-                    $_SESSION['danger-place'] = $place;
                     if ($num_of_adresses >= 20) {
                         if ($num_of_dg_places == 0) {
                             $loc = $user_info['loc_p'];
@@ -129,7 +128,6 @@ if (isset($_POST['reg_login']) and
                 if ($num_of_adresses >= 5) {
                     $dg_pl_num = mysqli_query($connection, "SELECT * FROM `danger_places` WHERE `adres`='$place'");
                     $num_of_dg_places = mysqli_num_rows($dg_pl_num);
-                    $_SESSION['danger-place2'] = $place;
                     if ($num_of_adresses >= 20) {
                         if ($num_of_dg_places == 0) {
                             $loc = $user_info['loc_p2'];
@@ -182,6 +180,27 @@ if (isset($_POST['reg_login']) and
                     }
                 }
 
+                $place = $user_info['place'];
+                $place_num = mysqli_query($connection, "SELECT * FROM `danger_places` WHERE `adres`='$place'");
+                $num_of_adresses = mysqli_num_rows($place_num);
+                if ($num_of_adresses > 0) {
+                    $_SESSION['dg'] = true;
+                    $_SESSION['danger-place'] = $place;
+                } else {
+                    unset($_SESSION['dg']);
+                    unset($_SESSION['danger-place']);
+                }
+
+                $place2 = $user_info['place2'];
+                $place_num2 = mysqli_query($connection, "SELECT * FROM `danger_places` WHERE `adres`='$place2'");
+                $num_of_adresses2 = mysqli_num_rows($place_num2);
+                if ($num_of_adresses2 > 0) {
+                    $_SESSION['dg2'] = true;
+                    $_SESSION['danger-place2'] = $place2;
+                } else {
+                    unset($_SESSION['dg2']);
+                    unset($_SESSION['danger-place2']);
+                }
                 //====================================================================================================================
                 //Вход на страничку пользователя
                 header('Location: /includes/user.php');

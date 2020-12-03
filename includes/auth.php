@@ -5,6 +5,7 @@ if ($_SESSION['user']) {
     header('Location: user.php');
     exit();
 }
+if (isset($_SESSION['errors'])) $err = $_SESSION['errors'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +18,13 @@ if ($_SESSION['user']) {
 <body>
     <?php require_once 'navbar.php'; ?>
     <div class="container auth border-secondary"><br><br>
+    <?php
+    if (isset($err)) {
+        echo '<p class="alert-danger">' . $err . '</p>';
+        unset($err);
+        unset($_SESSION['errors']);
+    }
+    ?>
         <form action="divarication.php" method="post">
             <div class="title">
                 <h1>Войти</h1>
