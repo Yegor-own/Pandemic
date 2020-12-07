@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+$usr_pg = true;
+
 if (isset($_SESSION['success-update']) and $_SESSION['success-update']) $status_update = $_SESSION['status-update'];
 if (isset($_SESSION['user'])) {
     $user = $_SESSION['user'];

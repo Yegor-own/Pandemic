@@ -5,10 +5,10 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item <?php if($page_home) echo 'active'; $page_home = false;?>">
+            <li class="nav-item <?php if($home_pg) echo 'active'; $home_pg = false;?>">
                 <a class="nav-link" href="/">Главная страница <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item <?php if($page_auth) echo 'active'; $page_auth = false; ?>">
+            <li class="nav-item <?php if($usr_pg) echo 'active'; $usr_pg = false; ?>">
                 <a class="nav-link" href="/includes/auth.php" tabindex="-1" aria-disabled="true">Ваша страница</a>
             </li>
         </ul>

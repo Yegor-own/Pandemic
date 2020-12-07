@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+$usr_pg = true;
+
 if (isset($_SESSION['errors'])) $err = $_SESSION['errors'];
 ?>
 <!DOCTYPE html>

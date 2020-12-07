@@ -1,15 +1,17 @@
 <?php
 session_start();
-require_once "db.php";
+require_once "database.php";
+
+$home_pg = true;
 
 $sql = "SELECT * FROM `danger_places` ORDER BY `id` DESC";
 $dg_places = mysqli_query($connection, $sql);
 
 $last_dat = mysqli_query($connection, $sql);
 
-// $last_date = mysqli_fetch_assoc($last_dat);
-// $_SESSION['date'] = $last_date['date'];
-// $date = $_SESSION['date'];
+$last_date = mysqli_fetch_assoc($last_dat);
+$_SESSION['date'] = $last_date['date'];
+$date = $_SESSION['date'];
 
 if (!isset($_SESSION['user'])) {
     $_SESSION['user'] = false;
@@ -22,10 +24,17 @@ if (isset($_SESSION['day'])) {
     $day = $_SESSION['day'];
     if ($day == 'yesterday') {
         $sql = "SELECT * FROM `danger_places` WHERE `date` <= subdate(now(),1) AND `date` > subdate(now(),2)";
+        $date1 = date_create($date);
+        date_modify($date1, '-1 day');
+        $date1 = date_format($date1, 'Y-m-d');
+        $sql = "SELECT * FROM `danger_places` WHERE `date` <= '$date1'";
         $dg_places_date1 = mysqli_query($connection, $sql);
     }
     elseif ($day == 'twodaysago') {
-        $sql = "SELECT * FROM `danger_places` WHERE `date` <= subdate(now(),2) AND `date` > subdate(now(),3)";
+        $date2 = date_create($date);
+        date_modify($date2, '-2 day');
+        $date2 = date_format($date2, 'Y-m-d');
+        $sql = "SELECT * FROM `danger_places` WHERE `date` <= '$date2'";
         $dg_places_date2 = mysqli_query($connection, $sql);
     }
 }
@@ -57,13 +66,13 @@ $num_rows = mysqli_num_rows($dg_places);
         <div class="row d-flex justify-content-between menu">
             <div class="form-inline time">
                 <form class="day_form" action="/includes/divarication.php" method="get">
-                    <input class="btn btn-secondary" type="submit" name="day" value="Позовчера"><span>  </span>
+                    <input class="btn btn-secondary" type="submit" name="day" value="Пред предпоследнее добавление"><span>  </span>
                 </form>
                 <form class="day_form" action="/includes/divarication.php" method="get">
-                    <input class="btn btn-secondary" type="submit" name="day" value="Вчера"><span>  </span>
+                    <input class="btn btn-secondary" type="submit" name="day" value="Предпоследнее добавление"><span>  </span>
                 </form>
                 <form class="day_form" action="/includes/divarication.php" method="get">
-                    <input class="btn btn-secondary" type="submit" name="day" value="Сегодня"><span>  </span>
+                    <input class="btn btn-secondary" type="submit" name="day" value="Сейчас"><span>  </span>
                 </form>
             </div>
             <?php

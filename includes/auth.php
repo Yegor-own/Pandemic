@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+$usr_pg = true;
+
 if ($_SESSION['user']) {
     header('Location: user.php');
     exit();

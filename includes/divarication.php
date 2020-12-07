@@ -1,5 +1,5 @@
 <?php
-require_once ("../db.php");
+require_once ("../database.php");
 session_start();
 
 if ($_SESSION['user']) {
@@ -303,17 +303,17 @@ if (isset($_POST['quantity_update'])) {
 //======================================================================================================================
 //Проверка дня карты
 if (isset($_GET['day'])) {
-    if ($_GET['day'] == 'Сегодня'){
+    if ($_GET['day'] == 'Сейчас'){
         $_SESSION['day'] = 'today';
         header("Location: ../index.php");
         exit();
     }
-    elseif ($_GET['day'] == 'Вчера') {
+    elseif ($_GET['day'] == 'Предпоследнее добавление') {
         $_SESSION['day'] = 'yesterday';
         header("Location: ../index.php");
         exit();
     }
-    elseif ($_GET['day'] == 'Позовчера') {
+    elseif ($_GET['day'] == 'Пред предпоследнее добавление') {
         $_SESSION['day'] = 'twodaysago';
         header("Location: ../index.php");
         exit();
