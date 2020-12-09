@@ -12,5 +12,13 @@
                 <a class="nav-link" href="/includes/auth.php" tabindex="-1" aria-disabled="true">Ваша страница</a>
             </li>
         </ul>
+        <form class="form-inline mr-sm-2" action="/includes/divarication.php" method="POST">
+            <input class="form-control mr-sm-2" name="victim-adres" type="text" placeholder="Ваш адрес" aria-label="Ваш адрес">
+            <button class="btn btn-danger my-2 my-sm-0" type="submit">Вызов скорой помощьи</button>
+        </form>
+        <form class="form-inline">
+            <input class="form-control mr-sm-2" type="search" placeholder="Поиск" aria-label="Поиск">
+            <button class="btn btn-success my-2 my-sm-0" type="submit">Поиск</button>
+        </form>
     </div>
 </nav>

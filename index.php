@@ -20,6 +20,8 @@ if (!isset($_SESSION['user'])) {
     $user = $_SESSION['user'];
 }
 
+if (isset($_SESSION['message'])) $message = $_SESSION['message'];
+
 if (isset($_SESSION['day'])) {
     $day = $_SESSION['day'];
     if ($day == 'yesterday') {
@@ -39,8 +41,10 @@ if (isset($_SESSION['day'])) {
     }
 }
 
+
 $num_rows = mysqli_num_rows($dg_places);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,6 +67,9 @@ $num_rows = mysqli_num_rows($dg_places);
     <?php require('includes/navbar.php'); ?>
 
     <div class="container-fluid">
+    <?php
+    if (isset($message)) echo '<p class="alert-warning">' . $message . '</p>';
+    ?>
         <div class="row d-flex justify-content-between menu">
             <div class="form-inline time">
                 <form class="day_form" action="/includes/divarication.php" method="get">

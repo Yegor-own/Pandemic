@@ -319,3 +319,16 @@ if (isset($_GET['day'])) {
         exit();
     }
 }
+
+if (isset($_POST['victim-adres'])) {
+    if (!empty($_POST['victim-adres'])) {
+        $adres = $_POST['victim-adres'];
+        $theme = 'Вызов скорой помощи';
+        $message = 'Вызов скорой помощи произошел по адресу: ' . $adres;
+        $to = 'health0crowdsourcing@gmail.com';
+        mail($to, $theme, $message);
+        unset($adres);
+        $_SESSION['message'] = 'Скорая уже в пути';
+        header('location: ../index.php');
+    }
+}
