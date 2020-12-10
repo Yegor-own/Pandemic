@@ -332,3 +332,20 @@ if (isset($_POST['victim-adres'])) {
         header('location: ../index.php');
     }
 }
+
+if (isset($_GET['search'])) {
+    if (!empty($_GET['search'])) {
+        $request = $_GET['search'];
+        $sql = "SELECT * FROM `danger_places` WHERE `adres` LIKE '%$request%'";
+        $select = mysqli_query($connection, $sql);
+        if ($select) {
+            $num = mysqli_num_rows($select);
+            if ($num < 1) {
+                $_SESSION['message'] = 'Это место безопастно для вас';
+            } else {
+                $_SESSION['search'] = mysqli_fetch_assoc($select);
+            }
+            header('location: ../index.php');
+        }
+    }
+}

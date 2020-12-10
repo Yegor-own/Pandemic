@@ -41,6 +41,8 @@ if (isset($_SESSION['day'])) {
     }
 }
 
+if (isset($_SESSION['search'])) 
+    $search = $_SESSION['search'];
 
 $num_rows = mysqli_num_rows($dg_places);
 ?>
@@ -68,17 +70,21 @@ $num_rows = mysqli_num_rows($dg_places);
 
     <div class="container-fluid">
     <?php
-    if (isset($message)) echo '<p class="alert-warning">' . $message . '</p>';
+    if (isset($message)) {
+        echo '<span class="alert-warning"> <strong>' . $message . '</strong></span>';
+        unset($message);
+        unset($_SESSION['message']);
+    }
     ?>
         <div class="row d-flex justify-content-between menu">
             <div class="form-inline time">
-                <form class="day_form" action="/includes/divarication.php" method="get">
+                <form class="mr-sm-2" action="/includes/divarication.php" method="get">
                     <input class="btn btn-secondary" type="submit" name="day" value="Пред предпоследнее добавление"><span>  </span>
                 </form>
-                <form class="day_form" action="/includes/divarication.php" method="get">
+                <form class="mr-sm-2" action="/includes/divarication.php" method="get">
                     <input class="btn btn-secondary" type="submit" name="day" value="Предпоследнее добавление"><span>  </span>
                 </form>
-                <form class="day_form" action="/includes/divarication.php" method="get">
+                <form class="mr-sm-2" action="/includes/divarication.php" method="get">
                     <input class="btn btn-secondary" type="submit" name="day" value="Сейчас"><span>  </span>
                 </form>
             </div>
@@ -99,9 +105,6 @@ $num_rows = mysqli_num_rows($dg_places);
                 }
                 .title {
                     font-size: 25px;
-                }
-                .day_form {
-                    margin: 5px;
                 }
                 .description {
                     list-style: none;
@@ -328,14 +331,16 @@ $num_rows = mysqli_num_rows($dg_places);
             <?php
             }
         }
+        unset($day);
+        unset($_SESSION['day']);
     } else {
-        while ($danger_pl = mysqli_fetch_assoc($dg_places)) {
+        if (isset($search)) {
             ?>
             <script>
-                loc = '<?php echo $danger_pl['loc']; ?>';
-                loc2 = '<?php echo $danger_pl['loc2']; ?>';
-                status = '<?php echo $danger_pl['status']; ?>';
-                adres = '<?php echo $danger_pl['adres']; ?>';
+                loc = '<?php echo $search['loc']; ?>';
+                loc2 = '<?php echo $search['loc2']; ?>';
+                status = '<?php echo $search['status']; ?>';
+                adres = '<?php echo $search['adres']; ?>';
                 if (status == 4) {
                     circle = L.circle([loc, loc2], {
                         color: 'red',
@@ -374,6 +379,55 @@ $num_rows = mysqli_num_rows($dg_places);
                 }
             </script>
         <?php
+        unset($search);
+        unset($_SESSION['search']);
+        } else {
+            while ($danger_pl = mysqli_fetch_assoc($dg_places)) {
+                ?>
+                <script>
+                    loc = '<?php echo $danger_pl['loc']; ?>';
+                    loc2 = '<?php echo $danger_pl['loc2']; ?>';
+                    status = '<?php echo $danger_pl['status']; ?>';
+                    adres = '<?php echo $danger_pl['adres']; ?>';
+                    if (status == 4) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'red',
+                            fillColor: 'red',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(map);
+                        circle.bindPopup(adres + '<br> Уровень опастности: очень высокий');
+                    }
+                    else if (status == 3) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'orange',
+                            fillColor: 'orange',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(map);
+                        circle.bindPopup(adres + '<br> Уровень опастности: высокий');
+                    }
+                    else if (status == 2) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'yellow',
+                            fillColor: 'yellow',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(map);
+                        circle.bindPopup(adres + '<br> Уровень опастности: средний');
+                    }
+                    if (status == 1) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'green',
+                            fillColor: 'green',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(map);
+                        circle.bindPopup(adres + '<br> Уровень опастности: небольшой');
+                    }
+                </script>
+            <?php
+            }
         }
     }
     ?>
