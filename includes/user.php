@@ -36,6 +36,8 @@ if (isset($_SESSION['user'])) {
     <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 </head>
@@ -192,68 +194,14 @@ if (isset($_SESSION['user'])) {
                 }
             }
         );
-        const platform = new H.service.Platform({
-            apikey: 'MI1rCmF1IAzm9Kra7UGAv-LDcgde1ZuX9fnMfXaOjow'
-        });
-        const defaultLayers = platform.createDefaultLayers();
-        const map = new H.Map(document.getElementById('rout'),
-            defaultLayers.vector.normal.map,{
-            center: {lat: 56.8519000, lng: 60.6122000},
-            zoom: 13,
-            pixelRatio: window.devicePixelRatio || 1
-        });
-        window.addEventListener('resize', () => map.getViewPort().resize());
-        const behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
-        const ui = H.ui.UI.createDefault(map, defaultLayers);
-        let routingParameters = {
-            'routingMode': 'fast',
-            'transportMode': 'car',
-            'origin': '<?php echo $user_info['loc']; ?>,<?php echo $user_info['loc2']; ?>',
-            'destination': '<?php echo $user_info['loc_p']; ?>,<?php echo $user_info['loc2_p']; ?>',
-            'return': 'polyline'
-        };
-        // Define a callback function to process the routing response:
-        let onResult = function(result) {
-          // ensure that at least one route was found
-            if (result.routes.length) {
-                result.routes[0].sections.forEach((section) => {
-                     // Create a linestring to use as a point source for the route line
-                    let linestring = H.geo.LineString.fromFlexiblePolyline(section.polyline);
-                    
-                    // Create a polyline to display the route:
-                    let routeLine = new H.map.Polyline(linestring, {
-                        style: { strokeColor: 'blue', lineWidth: 3 }
-                    });
-                
-                    // Create a marker for the start point:
-                    let startMarker = new H.map.Marker(section.departure.place.location);
-                    
-                    // Create a marker for the end point:
-                    let endMarker = new H.map.Marker(section.arrival.place.location);
-                    
-                    // Add the route polyline and the two markers to the map:
-                    map.addObjects([routeLine, startMarker, endMarker]);
-                    
-                    // Set the map's viewport to make the whole route visible:
-                    map.getViewModel().setLookAtData({bounds: routeLine.getBoundingBox()});
-                });
-            }
-        };
-        // Get an instance of the routing service version 8:
-        let router = platform.getRoutingService(null, 8);
-        // Call calculateRoute() with the routing parameters,
-        // the callback and an error callback function (called if a
-        // communication error occurs):
-        router.calculateRoute(routingParameters, onResult,
-        function(error) {
-            alert(error.message);
-        });
     </script>
+    <script src="user.js"></script>
     <?php
     }
     unset($danger);
     unset($danger2);
     ?>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </body>
