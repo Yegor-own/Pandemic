@@ -8,35 +8,29 @@ navigator.geolocation.getCurrentPosition(
         let location1
         let location2
         let polyline
+        let marker
         function sendPost() {
-            if (location2 != null && location1 != null) {
-                // let p1 = location1.getLatLng(),
-                //     p2 = location2.getLatLng()
+            if (location2 != null && location2 != undefined) {
                 if (polyline) {
                     map.removeLayer(polyline)
                 }
+                map.removeLayer(marker)
                 polyline = L.Routing.control({
                     waypoints: [
                         L.latLng(location1),
                         L.latLng(location2)
                     ],
-                    routeWhileDragging: true,
+                    routeWhileDragging: false,
                 }).addTo(map)
-                // L.Routing.control({
-                //     waypoints: [
-                //         L.latLng(57.74, 11.94),
-                //         L.latLng(57.6792, 11.949)
-                //     ],
-                //     routeWhileDragging: true
-                // }).addTo(map);
             }
         }
         map.on('click', function(e) {
             if (location1 === undefined) {
-                location1 = e.latlng;
+                location1 = e.latlng
+                marker = new L.Marker(e.latlng).addTo(map)
             }
             else if (location2 === undefined) {
-                location2 = e.latlng;
+                location2 = e.latlng
                 sendPost()
             }
         })
