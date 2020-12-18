@@ -1,7 +1,11 @@
 <?php
 session_start();
+require_once '../database.php';
 
 $usr_pg = true;
+
+$sql = "SELECT * FROM `danger_places` ORDER BY `id` DESC";
+$dg_places = mysqli_query($connection, $sql);
 
 if (isset($_SESSION['success-update']) and $_SESSION['success-update']) $status_update = $_SESSION['status-update'];
 if (isset($_SESSION['user'])) {
@@ -20,6 +24,7 @@ if (isset($_SESSION['user'])) {
     }
 }
 
+$num_rows = mysqli_num_rows($dg_places);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,7 +44,6 @@ if (isset($_SESSION['user'])) {
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -136,6 +140,9 @@ if (isset($_SESSION['user'])) {
             <button type="submit" class="btn btn-success">Подтвердить</button>
         </form><br><br>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <script>
         $(".instruction").on('click', function(instuct) {
             $(".instruction_body").html("<div class=\"row d-flex justify-content-between\"><br><img class=\"border border-dark\" src=\"images/1.jpg\" width=\"40%\" alt=\"\"><img class=\"border border-dark\" src=\"images/2.jpg\" width=\"40%\" alt=\"\"></div><br><div class=\"row d-flex justify-content-between\"><br><img class=\"border border-dark\" src=\"images/3.jpg\" width=\"40%\" alt=\"\"><img class=\"border border-dark\" src=\"images/4.jpg\" width=\"40%\" alt=\"\"></div><br><div class=\"row d-flex justify-content-between\"><br><img class=\"border border-dark\" src=\"images/5.jpg\" width=\"40%\" alt=\"\"><img class=\"border border-dark\" src=\"images/6.jpg\" width=\"40%\" alt=\"\"></div><br>")
@@ -161,15 +168,16 @@ if (isset($_SESSION['user'])) {
                     iconUrl: '../orange.png',
                     iconSize: [10, 10],
                 });
-                const usermap = L.map('map', {}).setView([lat, lng], 13);
+                const usermap = L.map('map', {
+                }).setView([lat, lng], 13);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(usermap);
-                let status = '<?php echo $user_info['status']; ?>';
-                let loc = '<?php echo $user_info['loc']; ?>';
-                let loc2 = '<?php echo $user_info['loc2']; ?>';
-                L.marker([loc, loc2], {icon: home}).addTo(usermap)
+                let stat = '<?php echo $user_info['status']; ?>';
+                let locat = '<?php echo $user_info['loc']; ?>';
+                let locat2 = '<?php echo $user_info['loc2']; ?>';
+                L.marker([locat, locat2], {icon: home}).addTo(usermap)
                     .bindPopup('Ваше место жительства')
                     .openPopup();
-                if (status == 1) {
+                if (stat == 1) {
                     let loc_p = '<?php echo $user_info['loc_p']; ?>';
                     let loc2_p = '<?php echo $user_info['loc2_p']; ?>';
                     L.marker([loc_p, loc2_p], {icon: ile}).addTo(usermap)
@@ -192,18 +200,98 @@ if (isset($_SESSION['user'])) {
                         .bindPopup('Ваше часто посещаепое место №2 <br> <?php echo $user_info['place2']; ?> <br> <?php if (isset($dg2) and $dg2) echo 'Это место стало опастно для вас есть риск заражения'; ?>')
                         .openPopup();
                 }
+
+
+                const route = L.map('rout', {}).setView([lat, lng], 13)
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(route)
+                let circle
+                let status
+                let loc
+                let loc2
+                let adres
+                <?php
+                while ($danger_pl = mysqli_fetch_assoc($dg_places)) {
+                ?>
+                    loc = '<?php echo $danger_pl['loc']; ?>'
+                    loc2 = '<?php echo $danger_pl['loc2']; ?>'
+                    status = '<?php echo $danger_pl['status']; ?>'
+                    adres = '<?php echo $danger_pl['adres']; ?>'
+                    if (status == 4) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'red',
+                            fillColor: 'red',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(route);
+                        circle.bindPopup(adres + '<br> Уровень опастности: очень высокий');
+                    }
+                    else if (status == 3) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'orange',
+                            fillColor: 'orange',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(route);
+                        circle.bindPopup(adres + '<br> Уровень опастности: высокий');
+                    }
+                    else if (status == 2) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'yellow',
+                            fillColor: 'yellow',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(route);
+                        circle.bindPopup(adres + '<br> Уровень опастности: средний');
+                    }
+                    if (status == 1) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'green',
+                            fillColor: 'green',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(route);
+                        circle.bindPopup(adres + '<br> Уровень опастности: небольшой');
+                    }
+            <?php
             }
-        );
-    </script>
-    <script src="user.js"></script>
-    <?php
-    }
-    unset($danger);
-    unset($danger2);
-    ?>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+            ?>
+                let location1
+                let location2
+                let polyline
+                let marker
+                function sendPost() {
+                    if (location2 != null && location2 != undefined) {
+                        if (polyline) {
+                            route.removeLayer(polyline)
+                        }
+                        route.removeLayer(marker)
+                        polyline = L.Routing.control({
+                            waypoints: [
+                                L.latLng(location1),
+                                L.latLng(location2)
+                            ],
+                            routeWhileDragging: false,
+                        }).addTo(route)
+                    }
+                }
+                route.on('click', function(e) {
+                    if (location1 === undefined) {
+                        location1 = e.latlng
+                        marker = new L.Marker(e.latlng).addTo(route)
+                    }
+                    else if (location2 === undefined) {
+                        location2 = e.latlng
+                        sendPost()
+                    }
+                })
+                }
+            );
+            </script>
+            <?php
+            }
+        unset($danger);
+        unset($danger2);
+        ?>
 </body>
 
 </html>

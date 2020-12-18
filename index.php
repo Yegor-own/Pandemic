@@ -55,15 +55,6 @@ $num_rows = mysqli_num_rows($dg_places);
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <!-- <style>
-        html, body{
-            height: 97%;
-        }
-
-        .container-fluid, .row, #map {
-            height: 98%;
-        }
-    </style> -->
 </head>
 <body>
     <?php require('includes/navbar.php'); ?>
@@ -140,23 +131,6 @@ $num_rows = mysqli_num_rows($dg_places);
         let pageWidth = document.documentElement.scrollWidth;
         let pageHeight = document.documentElement.scrollHeight;
         pageHeight = pageHeight - 100;
-        // if (pageWidth <= 980) {
-        //     let row = document.getElementById('row');
-        //     let map_class = document.getElementById('map');
-        //     let sidebar_class = document.getElementById('sidebar');
-        //     row.classList.toggle("row");
-        //     map_class.classList.toggle("order-1");
-        //     map_class.classList.toggle("col-9");
-        //     map_class.classList.toggle("col");
-        //     sidebar_class.classList.toggle("order-2");
-        //     sidebar_class.classList.toggle("col");
-        //     sidebar_class.classList.toggle("col-3");
-        //     pageWidth = pageWidth - 50;
-        //     pageHeight = pageHeight - 350;
-        //     $(".row").css("padding", "10px");
-        //     $("#map").css("height", pageHeight);
-        //     $("#map").css("width", pageWidth);
-        // }
         $("#map").css("height", pageHeight);
         console.log(pageWidth);
         console.log(pageHeight);
@@ -167,18 +141,6 @@ $num_rows = mysqli_num_rows($dg_places);
         }).addTo(map);
         let counter = '<?php echo $num_rows; ?>';
         let i = 0;
-    //     let home = L.icon({
-    //         iconUrl: 'blue.png',
-    //         iconSize: [10, 10],
-    //     });
-    //     let ile = L.icon({
-    //         iconUrl: 'red.png',
-    //         iconSize: [10, 10],
-    //     });
-    //     let risk = L.icon({
-    //         iconUrl: 'orange.png',
-    //         iconSize: [10, 10],
-    //     });
         let circle;
         let status;
         let loc;
