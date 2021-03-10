@@ -1,0 +1,28 @@
+/* .menu {
+  padding-top: 10px;
+  padding-bottom: 10px;
+} */
+.title {
+  font-size: 25px;
+}
+.description {
+  list-style: none;
+  margin: 0;
+}
+.home, .il, .risk {
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+}
+.home {
+  background-color: blue;
+}
+.il {
+  background-color: red;
+}
+.risk {
+  background-color: orangered;
+}
+span{
+  color: black;
+}

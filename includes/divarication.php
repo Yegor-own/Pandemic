@@ -225,7 +225,6 @@ if (isset($_POST['reg_login']) and
 //=======================================================================================================================================================
 
 // Проверка входа (auth.php)
-// $users = mysqli_query($connection, "SELECT * FROM `users`");
 if (isset($_POST['auth-login']) and isset($_POST['auth-password'])) {
     $login = $_POST['auth-login'];
     $password = md5($_POST['auth-password']);
@@ -235,6 +234,7 @@ if (isset($_POST['auth-login']) and isset($_POST['auth-password'])) {
         $_SESSION['user-info'] = mysqli_fetch_assoc($check_user);
         $user_info = $_SESSION['user-info'];
         $_SESSION['login'] = $_POST['auth-login'];
+        $_SESSION['password'] = $_POST['auth-password'];
         $_SESSION['user'] = true;
         $login = $_SESSION['login'];
 
@@ -301,24 +301,6 @@ if (isset($_POST['quantity_update'])) {
 }
 
 //======================================================================================================================
-//Проверка дня карты
-if (isset($_GET['day'])) {
-    if ($_GET['day'] == 'Сейчас'){
-        $_SESSION['day'] = 'today';
-        header("Location: ../index.php");
-        exit();
-    }
-    elseif ($_GET['day'] == 'Предпоследнее добавление') {
-        $_SESSION['day'] = 'yesterday';
-        header("Location: ../index.php");
-        exit();
-    }
-    elseif ($_GET['day'] == 'Пред предпоследнее добавление') {
-        $_SESSION['day'] = 'twodaysago';
-        header("Location: ../index.php");
-        exit();
-    }
-}
 
 if (isset($_POST['victim-adres'])) {
     if (!empty($_POST['victim-adres'])) {
@@ -348,4 +330,40 @@ if (isset($_GET['search'])) {
             header('location: ../index.php');
         }
     }
+}
+
+if (isset($_POST['loc_p']) and isset($_POST['loc_p2'])) {
+    $login = $_SESSION['login'];
+    $sql = "UPDATE `users` SET `loc_p`='".$_POST['loc_p']."', `loc2_p`='".$_POST['loc2_p']."', `place`='".$_POST['adres2']."', `loc_p2`='".$_POST['loc_p2']."', `loc2_p2`='".$_POST['loc2_p2']."', `place2`='".$_POST['adres3']."' WHERE `login`='$login'";
+    $insert = mysqli_query($connection, $sql) OR Die(' SQL Query not possible!');
+    $user_info = mysqli_query($connection, "SELECT * FROM `users` WHERE `login`='$login'");
+    $_SESSION['user-info'] = mysqli_fetch_assoc($user_info);
+    // $_SESSION['success-update'] = true;
+    // $check_user = mysqli_query($connection, "SELECT * FROM `users` WHERE `login`='$login' AND `password`='$password'");
+    // $_SESSION['user-info'] = mysqli_fetch_assoc($check_user);
+    $user_info = $_SESSION['user-info'];
+    //Проверка пользовательских мест в базе данных
+    $place = $user_info['place'];
+    $place_num = mysqli_query($connection, "SELECT * FROM `danger_places` WHERE `adres`='$place'");
+    $num_of_adresses = mysqli_num_rows($place_num);
+    if ($num_of_adresses > 0) {
+        $_SESSION['dg'] = true;
+        $_SESSION['danger-place'] = $place;
+    } else {
+        unset($_SESSION['dg']);
+        unset($_SESSION['danger-place']);
+    }
+
+    $place2 = $user_info['place2'];
+    $place_num2 = mysqli_query($connection, "SELECT * FROM `danger_places` WHERE `adres`='$place2'");
+    $num_of_adresses2 = mysqli_num_rows($place_num2);
+    if ($num_of_adresses2 > 0) {
+        $_SESSION['dg2'] = true;
+        $_SESSION['danger-place2'] = $place2;
+    } else {
+        unset($_SESSION['dg2']);
+        unset($_SESSION['danger-place2']);
+    }
+    header("Location: user.php");
+    exit();
 }

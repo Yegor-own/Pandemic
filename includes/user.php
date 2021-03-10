@@ -33,79 +33,40 @@ $num_rows = mysqli_num_rows($dg_places);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ваша страница</title>
-    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
-
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <script type="text/javascript" src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <link type="text/css" rel="stylesheet"  href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script type="text/javascript" src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    <script type="text/javascript" src="http://www.liedman.net/lrm-graphhopper/dist/lrm-graphhopper-1.2.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 </head>
 
 <body>
 <?php require 'navbar.php'; ?><br>
     <?php if ($user) { ?>
-    <div class="container"><br><br>
-    <?php
-    if (isset($status_update)) {
-        switch ($status_update) {
-            case 1:
-                $print = 'Положительный результат тестирования';
-                break;
-            case 2:
-                $print = 'Отрицательный результат тестирования';
-                break;
-            case 3:
-                $print = 'Ожидание результатов тестирования';
-                break;
-            case 4:
-                $print = 'Был в контакте с подтвержденным случаем';
-                break;
-            case 5:
-                $print = 'Был в контакте с потенциальным носителем вируса';
-                break;
-        }
-        echo '<p class="alert-success"> Удачно обновлен статус на ' . $print . '</p>';
-        $_SESSION['success-update'] = false;
-        unset($_SESSION['success-update']);
-        unset($_SESSION['status-update']);
-        unset($status_update);
-    }
-    ?>
-
-        <form action="divarication.php" method="post">
-            <input name="reset" type="submit" class="btn btn-warning" value="Выйти">
-        </form><br>
-        <span>Что делать?   </span><button class="instruction btn btn-primary">Не отображается карта</button><br><br>
-        <div class="instruction_body"></div>
+    <div class="container">
         <?php
-        if (isset($dg)) {
-            if (isset($dg)) echo '<p class="alert-danger">Часто посещаемое место №1 стало опасно в связи с повышеным риском забольевания по адресу ' . $danger . '</p><br>';
+        if (isset($status_update)) {
+            $tmp = [
+                'Положительный результат тестирования',
+                'Отрицательный результат тестирования',
+                'Ожидание результатов тестирования',
+                'Был в контакте с подтвержденным случаем',
+                'Был в контакте с потенциальным носителем вируса'];
+            $print = $tmp[$status_update - 1];
+            echo '<p class="alert-success"> Удачно обновлен статус на ' . $print . '</p>';
+            $_SESSION['success-update'] = false;
+            unset($_SESSION['success-update']);
+            unset($_SESSION['status-update']);
+            unset($status_update);
         }
-        if (isset($dg2)) {
-            if (isset($dg2)) echo '<p class="alert-danger">Часто посещаемое место №2 стало опасно в связи с повышеным риском забольевания по адресу ' . $danger2 . '</p><br>';
-        }
-        if (isset($message)) echo '<p class="alert-danger">' . $message . ' </p><br>';
         ?>
-        <div class="description">
-            <p><img src="../blue.png" height="15px" alt=""> - Место жительства</p>
-            <p><img src="../red.png" height="15px" alt=""> - Положительный результат тестирования</p>
-            <p><img src="../orange.png" height="15px" alt=""> - Отрицательный результат тестирования, <br>Ожидание результатов тестирования, <br>Был в контакте с подтвержденным случаем</p>
-        </div><br>
-        <div id="map" style="height: 500px;"></div><br>
-        <p>Чтобы построить маршрут выберите метки на карте</p>
-        <div id="rout" style="height: 500px;"></div><br>
         <form action="divarication.php" method="post">
             <div class="title">
-                <h1>Ваша учетная запись</h1>
+                <h3>Ваша учетная запись</h3>
                 <h5>Изменить состояние</h5>
-            </div><br>
+            </div>
             <div class="form-group">
-                <p class="title">Ваше состояние</p>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="quantity_update" id="Radios1" value="1">
                     <label class="form-check-label" for="Radios1">
@@ -138,7 +99,34 @@ $num_rows = mysqli_num_rows($dg_places);
                 </div>
             </div>
             <button type="submit" class="btn btn-success">Подтвердить</button>
-        </form><br><br>
+        </form><br>
+        <a href="update.php" class="btn btn-primary">Изменить геолкацию</a>
+        <br><br>
+        <?php
+        if (isset($dg)) {
+            if (isset($dg)) echo '<p class="alert-danger">Часто посещаемое место №1 стало опасно в связи с повышеным риском забольевания по адресу ' . $danger . '</p>';
+        }
+        if (isset($dg2)) {
+            if (isset($dg2)) echo '<p class="alert-danger">Часто посещаемое место №2 стало опасно в связи с повышеным риском забольевания по адресу ' . $danger2 . '</p>';
+        }
+        if (isset($message)) echo '<p class="alert-danger">' . $message . ' </p>';
+        ?>
+        <div class="description">
+            <p><img src="images/blue.png" height="15px" alt=""> - Место жительства</p>
+            <p><img src="images/red.png" height="15px" alt=""> - Положительный результат тестирования</p>
+            <p><img src="images/orange.png" height="15px" alt=""> - Отрицательный результат тестирования, <br>Ожидание результатов тестирования, <br>Был в контакте с подтвержденным случаем</p>
+        </div><br>
+        <p>Чтобы построить маршрут выберите метки на карте</p>
+        <div id="map" style="height: 700px;"></div><br>
+        <div class="row">
+            <form class="col-6" action="divarication.php" method="post">
+                <input name="reset" type="submit" class="btn btn-warning" value="Выйти">
+            </form>
+            <div class="col-6">
+                <span>Что делать?   </span><button class="instruction btn btn-primary">Не отображается карта</button><br><br>
+                <div class="instruction_body"></div>
+            </div>
+        </div><br><br>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
@@ -150,27 +138,67 @@ $num_rows = mysqli_num_rows($dg_places);
         $(".instruction").off('click', function(instuct_off) {
             $(".instruction_body").html(" ");
         });
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                let lat = position.coords.latitude;
-                let lng = position.coords.longitude;
-                console.log(lat);
-                console.log(lng);
                 let home = L.icon({
-                    iconUrl: '../blue.png',
-                    iconSize: [10, 10],
+                    iconUrl: 'images/blue.png',
+                    iconSize: [15, 15],
                 });
                 let ile = L.icon({
-                    iconUrl: '../red.png',
-                    iconSize: [10, 10],
+                    iconUrl: 'images/red.png',
+                    iconSize: [15, 15],
                 });
                 let risk = L.icon({
-                    iconUrl: '../orange.png',
-                    iconSize: [10, 10],
+                    iconUrl: 'images/orange.png',
+                    iconSize: [15, 15],
                 });
-                const usermap = L.map('map', {
-                }).setView([lat, lng], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(usermap);
+                const usermap = L.map('map').setView([56.8519000, 60.6122000], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(usermap);
+                let circle, status, loc, loc2, adres
+                <?php
+                while ($danger_pl = mysqli_fetch_assoc($dg_places)) {
+                ?>
+                    loc = '<?php echo $danger_pl['loc']; ?>'
+                    loc2 = '<?php echo $danger_pl['loc2']; ?>'
+                    status = '<?php echo $danger_pl['status']; ?>'
+                    adres = '<?php echo $danger_pl['adres']; ?>'
+                    if (status == 4) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'red',
+                            fillColor: 'red',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(usermap);
+                        circle.bindPopup(adres + '<br> Уровень опастности: очень высокий');
+                    }
+                    else if (status == 3) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'orange',
+                            fillColor: 'orange',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(usermap);
+                        circle.bindPopup(adres + '<br> Уровень опастности: высокий');
+                    }
+                    else if (status == 2) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'yellow',
+                            fillColor: 'yellow',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(usermap);
+                        circle.bindPopup(adres + '<br> Уровень опастности: средний');
+                    }
+                    if (status == 1) {
+                        circle = L.circle([loc, loc2], {
+                            color: 'green',
+                            fillColor: 'green',
+                            fillOpacity: 0.5,
+                            radius: 100
+                        }).addTo(usermap);
+                        circle.bindPopup(adres + '<br> Уровень опастности: небольшой');
+                    }
+                <?php
+                }
+                ?>
                 let stat = '<?php echo $user_info['status']; ?>';
                 let locat = '<?php echo $user_info['loc']; ?>';
                 let locat2 = '<?php echo $user_info['loc2']; ?>';
@@ -200,92 +228,42 @@ $num_rows = mysqli_num_rows($dg_places);
                         .bindPopup('Ваше часто посещаепое место №2 <br> <?php echo $user_info['place2']; ?> <br> <?php if (isset($dg2) and $dg2) echo 'Это место стало опастно для вас есть риск заражения'; ?>')
                         .openPopup();
                 }
-
-
-                const route = L.map('rout', {}).setView([lat, lng], 13)
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {}).addTo(route)
-                let circle
-                let status
-                let loc
-                let loc2
-                let adres
-                <?php
-                while ($danger_pl = mysqli_fetch_assoc($dg_places)) {
-                ?>
-                    loc = '<?php echo $danger_pl['loc']; ?>'
-                    loc2 = '<?php echo $danger_pl['loc2']; ?>'
-                    status = '<?php echo $danger_pl['status']; ?>'
-                    adres = '<?php echo $danger_pl['adres']; ?>'
-                    if (status == 4) {
-                        circle = L.circle([loc, loc2], {
-                            color: 'red',
-                            fillColor: 'red',
-                            fillOpacity: 0.5,
-                            radius: 100
-                        }).addTo(route);
-                        circle.bindPopup(adres + '<br> Уровень опастности: очень высокий');
-                    }
-                    else if (status == 3) {
-                        circle = L.circle([loc, loc2], {
-                            color: 'orange',
-                            fillColor: 'orange',
-                            fillOpacity: 0.5,
-                            radius: 100
-                        }).addTo(route);
-                        circle.bindPopup(adres + '<br> Уровень опастности: высокий');
-                    }
-                    else if (status == 2) {
-                        circle = L.circle([loc, loc2], {
-                            color: 'yellow',
-                            fillColor: 'yellow',
-                            fillOpacity: 0.5,
-                            radius: 100
-                        }).addTo(route);
-                        circle.bindPopup(adres + '<br> Уровень опастности: средний');
-                    }
-                    if (status == 1) {
-                        circle = L.circle([loc, loc2], {
-                            color: 'green',
-                            fillColor: 'green',
-                            fillOpacity: 0.5,
-                            radius: 100
-                        }).addTo(route);
-                        circle.bindPopup(adres + '<br> Уровень опастности: небольшой');
-                    }
-            <?php
-            }
-            ?>
-                let location1
-                let location2
-                let polyline
-                let marker
+                let location1, location2, polyline, marker
                 function sendPost() {
                     if (location2 != null && location2 != undefined) {
                         if (polyline) {
-                            route.removeLayer(polyline)
+                            usermap.removeLayer(polyline)
                         }
-                        route.removeLayer(marker)
+                        usermap.removeLayer(marker)
                         polyline = L.Routing.control({
                             waypoints: [
                                 L.latLng(location1),
                                 L.latLng(location2)
                             ],
-                            routeWhileDragging: false,
-                        }).addTo(route)
+                            showAlternatives: true,
+                            altLineOptions: {styles: [{color: 'white', opacity: 0.9, weight: 9},{color: '#960800FF', opacity: 1, weight: 5}]},
+                            lineOptions: {
+                                styles: [{color: 'white', opacity: 0.9, weight: 9},{color: '#4000FFFF', opacity: 1, weight: 5}]
+                            },
+                            router: L.Routing.graphHopper('641393f2-84a1-4d30-a186-9c3278155c49', {
+                                urlParameters: {
+                                    vehicle: 'foot'
+                                }
+                            }),
+                            usermapWhileDragging: false,
+                        }).addTo(usermap)
                     }
                 }
-                route.on('click', function(e) {
+                usermap.on('click', function(e) {
                     if (location1 === undefined) {
                         location1 = e.latlng
-                        marker = new L.Marker(e.latlng).addTo(route)
+                        marker = new L.Marker(e.latlng).addTo(usermap)
                     }
                     else if (location2 === undefined) {
                         location2 = e.latlng
                         sendPost()
                     }
                 })
-                }
-            );
             </script>
             <?php
             }
